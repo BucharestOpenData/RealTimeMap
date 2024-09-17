@@ -1,0 +1,11 @@
+{
+"type": "FeatureCollection",
+"name": "Autobaze Ilfov",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 1, "Operator": "STV", "Adresa": "Bd Dunării 71" }, "geometry": { "type": "Point", "coordinates": [ 26.199384673226735, 44.500583188262183 ] } },
+{ "type": "Feature", "properties": { "id": 2, "Operator": "STV", "Adresa": "DNCB TH Trucks" }, "geometry": { "type": "Point", "coordinates": [ 26.236493159920194, 44.45909163349765 ] } },
+{ "type": "Feature", "properties": { "id": 3, "Operator": "STCM Ecotrans", "Adresa": "Intrarea Banatului 4 Chitila" }, "geometry": { "type": "Point", "coordinates": [ 25.993588819967115, 44.501313636220537 ] } },
+{ "type": "Feature", "properties": { "id": 4, "Operator": "RegioServ", "Adresa": "Str Pepinierei Buftea garaj SSB" }, "geometry": { "type": "Point", "coordinates": [ 25.939131423519665, 44.56134029957996 ] } }
+]
+}

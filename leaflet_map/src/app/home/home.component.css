@@ -1,0 +1,190 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: 'Roboto', sans-serif;
+}
+
+.home-container {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+}
+
+.leaflet-map {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(1px);
+}
+
+.content {
+  z-index: 3;
+  text-align: center;
+  color: white;
+  padding: 30px 40px;
+  background: #266e99; /* Blue overlay with 80% opacity */
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 600px;
+}
+
+.content .image-container {
+  display: flex; /* Arrange images horizontally */
+  justify-content: center; /* Center the images horizontally */
+  align-items: center; /* Center the images vertically */
+}
+
+.content .image-container img {
+  max-width: 30%; /* Adjust as needed to control image size */
+  height: auto; /* Maintain aspect ratio */
+  margin: 10px;
+}
+
+h1 {
+  font-size: 1.8rem; /* Reduced font size */
+  margin-bottom: 25px;
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 18px 35px;
+  font-size: 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+.button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.button:active {
+  background-color: #20639b;
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button + .button {
+  margin-top: 15px;
+}
+
+.login-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent dark overlay */
+  z-index: 3; /* Above everything else */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-form {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  max-width: 300px;
+  width: 100%;
+}
+
+.login-form h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.login-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #2980b9;
+  transform: scale(1.05);
+}
+
+.login-button:active {
+  background-color: #20639b;
+}
+
+.continue-button {
+  background-color: #6c757d; /* Grey background */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  margin-top: 10px; /* Space between buttons */
+}
+
+.continue-button:hover {
+  background-color: #5a6268;
+  transform: scale(1.05);
+}
+
+.continue-button:active {
+  background-color: #43484d;
+}

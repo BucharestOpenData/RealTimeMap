@@ -1,0 +1,18 @@
+{
+"type": "FeatureCollection",
+"name": "Autobaze",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 1, "Denumire": "Autobaza Militari", "Tip": "Unitate de Exploatare" }, "geometry": { "type": "Point", "coordinates": [ 26.00379991771344, 44.432695702928555 ] } },
+{ "type": "Feature", "properties": { "id": 2, "Denumire": "Autobaza Bujoreni", "Tip": "Unitate de Exploatare Electrice" }, "geometry": { "type": "Point", "coordinates": [ 26.011119945149549, 44.42628767222525 ] } },
+{ "type": "Feature", "properties": { "id": 4, "Denumire": "Autobaza Alexandria", "Tip": "Unitate de Exploatare" }, "geometry": { "type": "Point", "coordinates": [ 26.042159067329663, 44.400973994639379 ] } },
+{ "type": "Feature", "properties": { "id": 3, "Denumire": "Autobaza Ferentari", "Tip": "Unitate de Exploatare" }, "geometry": { "type": "Point", "coordinates": [ 26.083464479879979, 44.38727469703128 ] } },
+{ "type": "Feature", "properties": { "id": 5, "Denumire": "Autobaza Berceni", "Tip": "Unitate de Exploatare Electrice" }, "geometry": { "type": "Point", "coordinates": [ 26.121144027256946, 44.390146791359541 ] } },
+{ "type": "Feature", "properties": { "id": 6, "Denumire": "Autobaza Obregia", "Tip": "Unitate de Exploatare" }, "geometry": { "type": "Point", "coordinates": [ 26.12002607083609, 44.376017642341914 ] } },
+{ "type": "Feature", "properties": { "id": 7, "Denumire": "Autobaza Titan", "Tip": "Unitate de Exploatare" }, "geometry": { "type": "Point", "coordinates": [ 26.204680131765027, 44.403762756062122 ] } },
+{ "type": "Feature", "properties": { "id": 8, "Denumire": "Autobaza Floreasca", "Tip": "Unitate de Exploatare" }, "geometry": { "type": "Point", "coordinates": [ 26.103609836679979, 44.460305133458839 ] } },
+{ "type": "Feature", "properties": { "id": 9, "Denumire": "Autobaza Nordului", "Tip": "Unitate de Exploatare" }, "geometry": { "type": "Point", "coordinates": [ 26.085280312694248, 44.488737687752632 ] } },
+{ "type": "Feature", "properties": { "id": 11, "Denumire": "Depoul Vatra Luminoasa", "Tip": "Unitate de Exploatare Troleibuze" }, "geometry": { "type": "Point", "coordinates": [ 26.148358513771459, 44.438041731808802 ] } },
+{ "type": "Feature", "properties": { "id": 10, "Denumire": "Autobaza Giurgiului", "Tip": "Unitate de Exploatare" }, "geometry": { "type": "Point", "coordinates": [ 26.099369286940945, 44.369277342693366 ] } }
+]
+}

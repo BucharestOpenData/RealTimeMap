@@ -1,0 +1,17 @@
+{
+"type": "FeatureCollection",
+"name": "Lucrari",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": null, "Denumire": "Închidere Piața 1 Mai", "Proiect": "M6" }, "geometry": { "type": "Point", "coordinates": [ 26.049687222004746, 44.471601257340197 ] } },
+{ "type": "Feature", "properties": { "id": null, "Denumire": "Reabilitare Strada Puțul lui Crăciun", "Proiect": "STB" }, "geometry": { "type": "Point", "coordinates": [ 26.052206855734724, 44.472234871116413 ] } },
+{ "type": "Feature", "properties": { "id": null, "Denumire": "Reabilitare Strada Clăbucet", "Proiect": "STB" }, "geometry": { "type": "Point", "coordinates": [ 26.052870112260706, 44.471882863462966 ] } },
+{ "type": "Feature", "properties": { "id": null, "Denumire": "Lucrări Strada Parcului", "Proiect": "M6" }, "geometry": { "type": "Point", "coordinates": [ 26.056986749134257, 44.480642296018395 ] } },
+{ "type": "Feature", "properties": { "id": null, "Denumire": "Modificare trasee autobuz Montreal", "Proiect": "M6" }, "geometry": { "type": "Point", "coordinates": [ 26.070720605634527, 44.475042132152716 ] } },
+{ "type": "Feature", "properties": { "id": null, "Denumire": "Lucrări Gara Băneasa", "Proiect": "M6" }, "geometry": { "type": "Point", "coordinates": [ 26.076263799840504, 44.484535222764819 ] } },
+{ "type": "Feature", "properties": { "id": null, "Denumire": "Lucrări Aeroport Băneasa", "Proiect": "M6" }, "geometry": { "type": "Point", "coordinates": [ 26.079995080967119, 44.495239960773553 ] } },
+{ "type": "Feature", "properties": { "id": null, "Denumire": "Lucrări Drumul Mătăsii", "Proiect": "M6" }, "geometry": { "type": "Point", "coordinates": [ 26.081575410063934, 44.506118849937174 ] } },
+{ "type": "Feature", "properties": { "id": null, "Denumire": "Lucrări Strada Occidentului", "Proiect": "Apa Nova" }, "geometry": { "type": "Point", "coordinates": [ 26.086892578302962, 44.447270580967036 ] } },
+{ "type": "Feature", "properties": { "id": null, "Denumire": "Lucrări Strada Budila", "Proiect": "Apa Nova" }, "geometry": { "type": "Point", "coordinates": [ 26.126780603454932, 44.434270382523401 ] } }
+]
+}
