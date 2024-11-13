@@ -1,0 +1,21 @@
+{
+"type": "FeatureCollection",
+"name": "ParkRide",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 0, "Stare": "Existent", "Denumire": "Straulesti" }, "geometry": { "type": "Point", "coordinates": [ 26.023269673854603, 44.503624701951402 ] } },
+{ "type": "Feature", "properties": { "id": 1, "Stare": "Existent", "Denumire": "Pantelimon" }, "geometry": { "type": "Point", "coordinates": [ 26.183344637956814, 44.440240078853577 ] } },
+{ "type": "Feature", "properties": { "id": 2, "Stare": "In Constructie", "Denumire": "Berceni Tudor Arghezi" }, "geometry": { "type": "Point", "coordinates": [ 26.159274992993364, 44.346514488454773 ] } },
+{ "type": "Feature", "properties": { "id": 3, "Stare": "Existent", "Denumire": "Piata Sudului" }, "geometry": { "type": "Point", "coordinates": [ 26.123375583503673, 44.392481654281632 ] } },
+{ "type": "Feature", "properties": { "id": 4, "Stare": "Propunere", "Denumire": "Petricani PMUD" }, "geometry": { "type": "Point", "coordinates": [ 26.126067792057871, 44.482290418678652 ] } },
+{ "type": "Feature", "properties": { "id": 5, "Stare": "Propunere", "Denumire": "Jiului PMUD" }, "geometry": { "type": "Point", "coordinates": [ 26.042139051796362, 44.480760105509027 ] } },
+{ "type": "Feature", "properties": { "id": 6, "Stare": "Propunere", "Denumire": "A2 PMUD" }, "geometry": { "type": "Point", "coordinates": [ 26.216920631436789, 44.407142395768233 ] } },
+{ "type": "Feature", "properties": { "id": 7, "Stare": "Propunere", "Denumire": "A1 PMUD" }, "geometry": { "type": "Point", "coordinates": [ 25.98689877387385, 44.434958988203206 ] } },
+{ "type": "Feature", "properties": { "id": 8, "Stare": "Propunere", "Denumire": "Progresul PMUD" }, "geometry": { "type": "Point", "coordinates": [ 26.090605992807717, 44.367288874721162 ] } },
+{ "type": "Feature", "properties": { "id": 9, "Stare": "Propunere", "Denumire": "DN1-M6 PMUD" }, "geometry": { "type": "Point", "coordinates": [ 26.06750285572722, 44.533854378995898 ] } },
+{ "type": "Feature", "properties": { "id": 10, "Stare": "Propunere", "Denumire": "M7 PMUD" }, "geometry": { "type": "Point", "coordinates": [ 25.994498673916119, 44.382943877214217 ] } },
+{ "type": "Feature", "properties": { "id": 11, "Stare": "Propunere", "Denumire": "Prelungirea Ghencea PMUD" }, "geometry": { "type": "Point", "coordinates": [ 25.976504056575568, 44.407202997668335 ] } },
+{ "type": "Feature", "properties": { "id": 12, "Stare": "Propunere", "Denumire": "M7 PMUD" }, "geometry": { "type": "Point", "coordinates": [ 26.204016289053392, 44.498270578273193 ] } },
+{ "type": "Feature", "properties": { "id": 13, "Stare": "Propunere", "Denumire": "Extindere M2 PMUD" }, "geometry": { "type": "Point", "coordinates": [ 26.142186466960101, 44.536086335775742 ] } }
+]
+}

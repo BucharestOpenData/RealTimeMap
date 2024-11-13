@@ -1,0 +1,15 @@
+{
+"type": "FeatureCollection",
+"name": "depouri",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 1, "Denumire": "Depoul Militari", "Stare": "Modernizat", "Valoare": null }, "geometry": { "type": "Point", "coordinates": [ 25.976653972147016, 44.42920173508675 ] } },
+{ "type": "Feature", "properties": { "id": 2, "Denumire": "Depoul Bucurestii Noi", "Stare": "Nemodernizat", "Valoare": null }, "geometry": { "type": "Point", "coordinates": [ 26.044515905810943, 44.479202100725757 ] } },
+{ "type": "Feature", "properties": { "id": 3, "Denumire": "Depoul Victoria", "Stare": "Nemodernizat", "Valoare": null }, "geometry": { "type": "Point", "coordinates": [ 26.090092815519522, 44.452807682503291 ] } },
+{ "type": "Feature", "properties": { "id": 4, "Denumire": "Depoul Colentina", "Stare": "Nemodernizat", "Valoare": "40,000,000" }, "geometry": { "type": "Point", "coordinates": [ 26.154681974766529, 44.472574538597797 ] } },
+{ "type": "Feature", "properties": { "id": 5, "Denumire": "Depoul Dudesti", "Stare": "Modernizat", "Valoare": null }, "geometry": { "type": "Point", "coordinates": [ 26.132137289953178, 44.421173656299935 ] } },
+{ "type": "Feature", "properties": { "id": 6, "Denumire": "Depoul Titan", "Stare": "Nemodernizat", "Valoare": "80,000,000" }, "geometry": { "type": "Point", "coordinates": [ 26.202417195857137, 44.401894722036715 ] } },
+{ "type": "Feature", "properties": { "id": 7, "Denumire": "Depoul Giurgiului", "Stare": "Modernizat", "Valoare": null }, "geometry": { "type": "Point", "coordinates": [ 26.098272528263593, 44.370643212725902 ] } },
+{ "type": "Feature", "properties": { "id": 8, "Denumire": "Depoul Alexandria", "Stare": "Modernizat", "Valoare": null }, "geometry": { "type": "Point", "coordinates": [ 26.045968684273817, 44.399252021708257 ] } }
+]
+}

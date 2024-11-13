@@ -1,0 +1,420 @@
+body {
+  background: #F9F8FD;
+  font-family: 'Lexend Exa', sans-serif;
+}
+
+#map {
+  height: 100vh;
+  width: 100%;
+  transform-origin: center center;
+  transition: transform 0.1s ease;
+  touch-action: none; /* Ensure the map container correctly handles touch gestures */
+  z-index: 1; /* Lower z-index for the map */
+
+}
+.logo-top-right {
+  position: absolute;
+  top: 10px;
+  right: 100px;
+  width: 100px;
+  height: auto;
+  z-index: 1000; /* Ensure the logo has a higher z-index than the map */
+}
+.login-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent dark overlay */
+  z-index: 1000; /* Ensure it's above the map */
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-form {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  max-width: 300px;
+  width: 100%;
+}
+.login-form h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.login-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #2980b9;
+  transform: scale(1.05);
+}
+
+.login-button:active {
+  background-color: #20639b;
+}
+.leaflet-control-layers.leaflet-control {
+  display: none !important;
+}
+
+.menu-container {
+  position: absolute;
+  display: inline-block;
+  border-radius: 10px;
+  background-color: transparent;
+  padding: 10px;
+  z-index: 1000;
+  width: 290px; /* Adjust width to your preference */
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+.menu-container.menu-show {
+  background-color: white; /* White when the menu is shown */
+}
+.layers-menu-container {
+  bottom: 75px; /* Adjust this value as needed to separate the buttons */
+  left: 15px;
+}
+
+.gtfs-menu-container {
+  bottom: 15px;
+  left: 15px;
+}
+
+.menu-button {
+  display: block;
+  width: 100%;
+  background: linear-gradient(135deg, #72edf2 10%, #5151e5 100%);
+  color: #FFF;
+  border: none;
+  padding: 10px 0;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0px 3px 5px 2px rgba(0, 0, 0, 0.1);
+
+}
+@media (max-width: 768px) {
+  .menu-button {
+    font-size: 14px; /* Smaller font size */
+    padding: 8px 0; /* Less padding */
+    border-radius: 20px; /* Smaller border radius */
+  }
+  .menu-container {
+    width: 70%; /* Reduce the width of the container */
+    max-width: 180px; /* Set a maximum width for the container */
+    padding: 10px; /* Adjust padding to make it more compact */
+  }
+}
+.menu-button:hover {
+  background: linear-gradient(135deg, #5151e5 10%, #72edf2 100%);
+  transform: scale(1.05);
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+.menu {
+  display: none;
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s, transform 0.3s;
+  max-height: 400px; /* Increased max height to show more items */
+  overflow-y: auto;  /* Ensure the menu is scrollable if content exceeds height */
+  overflow-x: hidden;  /* Prevent horizontal scrolling */
+  white-space: nowrap; /* Prevent text from wrapping, keeping it in a single line */
+}
+.line-hover {
+  color: purple !important;
+}
+
+.line-active {
+  color: yellow !important;
+}
+.menu.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.menu li {
+
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.menu li.selected {
+  background: #808080	;
+  box-shadow: 0px 3px 5px 2px rgba(0, 0, 0, 0.1);
+}
+
+.menu li:hover {
+  background: #EBECF1;
+  box-shadow: 0px 3px 5px 2px rgba(0, 0, 0, 0.1);
+}
+
+.menu label {
+  color: #333;
+  font-size: 14px;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.menu input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.menu input[type="color"].color-input {
+  margin-left: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+  height: 40px; /* Increased height */
+  width: 40px;  /* Increased width */
+  border-radius: 5px; /* Added border radius for rounded corners */
+}
+
+.menu input[type="range"].weight-range {
+  width: 80px; /* Adjust the width to make it smaller */
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.menu input[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.menu input[type="text"] {
+  width: calc(100% - 20px);
+  margin: 0 10px 10px;
+  padding: 5px;
+  font-size: 14px;
+}
+
+/* Styling for the search input */
+.search-container {
+  margin-bottom: 10px;
+}
+
+.search-container input[type="text"] {
+  width: calc(100% - 20px);
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.search-container input[type="text"]:focus {
+  border-color: #5151e5;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Button container styling */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+/* Popup styling */
+.leaflet-popup-content-wrapper {
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  background: white;
+  padding: 10px;
+}
+
+.leaflet-popup-content {
+  font-size: 14px;
+  color: #333;
+}
+
+.popup-content-wrapper {
+  font-family: 'Lexend Exa', sans-serif;
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.popup-content-wrapper h3 {
+  margin-top: 0;
+  font-size: 18px;
+  color: #5151e5;
+}
+
+.popup-content-wrapper div {
+  margin-bottom: 5px;
+}
+
+.layers-menu-container {
+  bottom: 150px; /* Increase the value to move the container upwards */
+  left: 15px;
+  margin-top: -100px; /* Increase the value to move the container further upwards */
+}
+
+.upload-geojson-container {
+  position: fixed; /* Use fixed positioning */
+  bottom: 20px; /* Position it above the toggle layers button */
+  right: 20px; /* Align to the right edge */
+  z-index: 2;
+  display: inline-block;
+  border-radius: 10px;
+  background-color: transparent;
+  padding: 10px;
+  width: 290px; /* Adjust width to match toggle layers button */
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+.menu-container.menu-show, .upload-geojson-container.menu-show {
+  background-color: white; /* White when the menu is shown */
+}
+.upload-geojson-button {
+  display: inline-block;
+  background: linear-gradient(135deg, #0000BF 10%, #5151e5 100%);
+  color: #FFF;
+  border: none;
+  padding: 10px; /* Adjusted padding for a smaller button */
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0px 3px 5px 2px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Adjusted width for a smaller button */
+  height: 40px; /* Adjusted height for a smaller button */
+}
+
+.upload-geojson-button:hover {
+  background: linear-gradient(135deg, #5151e5 10%, #0000BF 100%);
+  transform: scale(1.05);
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.upload-menu {
+  margin-top: 10px;
+}
+.zoom-to-location-button {
+  position: absolute;
+  bottom: 990px;
+  right: 15px;
+  z-index: 1001;
+  background: none;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.zoom-to-location-button img {
+  width: 40px; /* Adjust size as needed */
+  height: 40px; /* Adjust size as needed */
+}
+
+.zoom-to-location-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+.save-geojson-button {
+  display: inline-block;
+  background: linear-gradient(135deg, #5151e5 10%, #0000BF 100%);
+  color: #FFF;
+  border: none;
+  padding: 10px 0;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0px 3px 5px 2px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  margin-top: 10px;
+}
+
+.save-geojson-button:hover {
+  background: linear-gradient(135deg, #5151e5 10%, #0000BF 100%);
+  transform: scale(1.05);
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+.uploaded-geojson-list {
+  list-style: none;
+  padding: 0;
+}
+
+.uploaded-geojson-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid #EBECF1;
+}
+
+.uploaded-geojson-item span {
+  cursor: pointer;
+  color: #5151e5;
+}
+
+.uploaded-geojson-item span:hover {
+  text-decoration: underline;
+}
+
+.delete-geojson-button {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.delete-geojson-button:hover {
+  background: #ff1a1a;
+  transform: scale(1.05);
+  box-shadow: 0px 3px 5px 2px rgba(0, 0, 0, 0.1);
+}
+
+

@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "focus_points_intermodal",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": null, "Nume": "Nod Intermodal Gara Progresul", "Tip": "Structura intermodală și operațiuni urbanistice", "Buget": 35000000, "Detalii": null, "Source": "SIDU", "Maturitate": "Idee", "Prioritate": null, "Finantare": null, "Orizont": null, "Scenario": "2", "Details_en": "Intermodal node Progresu railway station", "Scenario2": null, "is_selec": null, "is_high_ca": null, "Tip_": "Nod_intermod", "Cod_prj": "INTER16", "Verif_MC": "Da" }, "geometry": { "type": "Point", "coordinates": [ 26.091292277546103, 44.365507528789998 ] } },
+{ "type": "Feature", "properties": { "id": null, "Nume": "Proiect integrat de regenerare verde-albastră, în zona râului Sabar", "Tip": "Structura intermodală și operațiuni urbanistice", "Buget": 5000000, "Detalii": null, "Source": "Jilava", "Maturitate": "Idee", "Prioritate": null, "Finantare": null, "Orizont": null, "Scenario": "2", "Details_en": "Integrated green-blue regeneration project", "Scenario2": null, "is_selec": null, "is_high_ca": null, "Tip_": "Regen_natural", "Cod_prj": "INTER54", "Verif_MC": "Da" }, "geometry": { "type": "Point", "coordinates": [ 26.071118484059618, 44.325264465238654 ] } }
+]
+}

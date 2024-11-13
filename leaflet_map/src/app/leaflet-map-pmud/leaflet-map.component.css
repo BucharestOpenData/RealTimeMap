@@ -1,0 +1,504 @@
+body {
+
+  background: #F9F8FD;
+
+  font-family: 'Lexend Exa', sans-serif;
+
+  margin: 0;
+
+  overflow-x: hidden;
+
+}
+
+
+
+#map {
+
+  height: 100vh;
+
+  width: 100%;
+
+  transform-origin: center center;
+
+  transition: transform 0.1s ease;
+
+  touch-action: none;
+
+}
+
+
+
+.leaflet-control-layers.leaflet-control {
+
+  display: none !important;
+
+}
+
+
+
+.sidebar-container {
+
+  position: fixed;
+
+  top: 0;
+
+  left: 0;
+
+  height: 100vh;
+
+  width: 300px;
+
+  background-color: #333;
+
+  transition: width 0.3s ease-in-out;
+
+  overflow-y: auto;
+
+  overflow-x: hidden;
+
+  z-index: 1000;
+
+  flex-direction: column;
+
+}
+
+
+
+.sidebar-container.collapsed {
+
+  width: 80px;
+
+  background-color: transparent;
+  border-radius: 0 5px 5px 0;
+
+
+}
+
+
+
+.toggle-sidebar-button {
+
+  background-color: #444;
+  font-size: 18px;
+  color: white;
+
+  border: none;
+
+  padding: 10px;
+
+  cursor: pointer;
+
+  border-radius: 0 5px 5px 0;
+
+  text-align: center;
+
+  transition: background-color 0.3s ease, transform 0.3s ease;
+
+  z-index: 1001;
+
+}
+
+
+
+.menu-container {
+
+  flex: 1;
+
+  overflow-y: auto;
+
+  padding: 20px;
+
+  color: #FFF;
+
+  opacity: 0;
+
+  transform: translateX(-20px);
+
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+
+}
+
+
+
+.sidebar-container:not(.collapsed) .menu-container {
+
+  opacity: 1;
+
+  transform: translateX(0);
+
+}
+
+
+
+.menu {
+
+  list-style: none;
+
+  padding: 0;
+
+  margin: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 15px;
+
+}
+
+
+
+.menu li {
+
+  background-color: #444;
+
+  padding: 15px;
+
+  border-radius: 8px;
+
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+
+  transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+
+  display: flex;
+
+  align-items: center;
+
+}
+
+
+
+.menu li:hover {
+
+  background-color: #555;
+
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+
+  transform: translateY(-3px);
+
+}
+
+
+
+.menu input[type="color"].color-input {
+
+  margin-left: 10px;
+
+  cursor: pointer;
+
+  height: 35px;
+
+  width: 35px;
+
+  border-radius: 5px;
+
+}
+
+
+
+.menu input[type="range"].weight-range {
+
+  width: 120px;
+
+  margin-left: 10px;
+
+  cursor: pointer;
+
+}
+
+
+
+/* Adjusted styles for layer controls */
+
+.menu .layer-controls {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+
+}
+
+
+
+.menu .layer-controls > div {
+
+  flex: 0 0 auto;
+
+  min-width: 0;
+
+  margin-right: 10px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-start;
+
+}
+
+
+
+.menu .layer-controls label {
+
+  margin-bottom: 5px;
+
+}
+
+
+
+@media (max-width: 768px) {
+
+  .sidebar-container {
+
+    width: 200px;
+
+  }
+
+
+
+  .sidebar-container.collapsed {
+
+    width: 80px;
+    background-color: transparent;
+    border-radius: 0 5px 5px 0;
+
+
+  }
+
+
+  .toggle-sidebar-button {
+
+    font-size: 15px;
+
+    padding: 12px;
+
+    width: 60px;
+
+    height: 60px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+  }
+
+
+
+  .menu-container {
+
+    padding: 10px;
+
+    font-size: 14px;
+
+  }
+
+
+
+  .menu li {
+
+    padding: 10px;
+
+  }
+
+
+
+  .menu label {
+
+    color: #FFF;
+
+    font-size: 14px;
+
+    margin-left: 10px;
+
+    flex-grow: 1;
+
+    white-space: normal;
+
+    word-wrap: break-word;
+
+  }
+
+
+
+  /* Adjusted media query for layer controls */
+
+  .menu .layer-controls {
+
+    flex-direction: column;
+
+  }
+
+
+
+  .menu .layer-controls > div {
+
+    width: 100%;
+
+    margin-right: 0;
+
+    margin-bottom: 10px;
+
+  }
+
+}
+
+
+
+.upload-geojson-container {
+
+  position: fixed;
+
+  bottom: 20px;
+
+  right: 20px;
+
+  z-index: 1001;
+
+  display: inline-block;
+
+  border: 2px solid #EBECF1;
+
+  border-radius: 10px;
+
+  background-color: white;
+
+  box-shadow: 0px 3px 5px 2px #EBECF1;
+
+  padding: 10px;
+
+  width: 290px;
+
+}
+
+
+
+.upload-geojson-button {
+
+  display: inline-block;
+
+  background: linear-gradient(135deg, #0000BF 10%, #5151e5 100%);
+
+  color: #FFF;
+
+  border: none;
+
+  padding: 10px;
+
+  border-radius: 30px;
+
+  cursor: pointer;
+
+  font-size: 16px;
+
+  font-weight: bold;
+
+  text-align: center;
+
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+
+  box-shadow: 0px 3px 5px 2px rgba(0, 0, 0, 0.1);
+
+  width: 100%;
+
+  height: 40px;
+
+}
+
+
+
+.upload-geojson-button:hover {
+
+  background: linear-gradient(135deg, #5151e5 10%, #0000BF 100%);
+
+  transform: scale(1.05);
+
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+
+}
+
+
+
+.upload-menu {
+
+  margin-top: 10px;
+
+}
+
+
+
+.uploaded-geojson-list {
+
+  list-style: none;
+
+  padding: 0;
+
+}
+
+
+
+.uploaded-geojson-item {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 5px 0;
+
+  border-bottom: 1px solid #EBECF1;
+
+}
+
+
+
+.uploaded-geojson-item span {
+
+  cursor: pointer;
+
+  color: #5151e5;
+
+}
+
+
+
+.uploaded-geojson-item span:hover {
+
+  text-decoration: underline;
+
+}
+
+
+
+.delete-geojson-button {
+
+  background: #ff4d4d;
+
+  color: white;
+
+  border: none;
+
+  border-radius: 5px;
+
+  padding: 5px 10px;
+
+  cursor: pointer;
+
+  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+
+}
+
+
+
+.delete-geojson-button:hover {
+
+  background: #ff1a1a;
+
+  transform: scale(1.05);
+
+  box-shadow: 0px 3px 5px 2px rgba(0, 0, 0, 0.1);
+}

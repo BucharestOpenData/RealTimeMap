@@ -1,0 +1,37 @@
+file,overlay-name,fill-color,stroke-color,stroke-weight,popup-max-height,popup-max-width,opacity
+base_transport_alternativ.geojson,Mijloace alternative de deplasare - Scenariu de baza,#FF5733,#C70039,10,1,1,1
+base_rutier.geojson,Rutier - Scenariu de baza,#33FF57,#39C700,10,1,1,1
+renew_deplasari_nemotorizate.geojson,Deplasari nemotorizate - Renew&Repair,#5733FF,#3900C7,10,1,1,1
+renew_transport_alternativ.geojson,Mijloace alternative de deplasare - Renew&Repair,#FF33A6,#C73900,10,1,1,1
+renew_rutier.geojson,Rutier - Renew&Repair,#33A6FF,#00C739,10,1,1,1
+renew_transport_marfa.geojson,Transport de marfa - Renew&Repair,#A6FF33,#C70039,10,1,1,1
+renew_transport_public.geojson,Transport public - Renew&Repair,#33FF57,#00C739,10,1,1,1
+renew_points_managementul_traficului.geojson,Managementul traficului si parcarea points - Renew&Repair,#5733FF,#3900C7,10,1,1,1
+renew_points_rutier.geojson,Rutier points - Renew&Repair,#FF33A6,#C73900,10,1,1,1
+renew_points_intermodalitate.geojson,Structura intermodala si operatiuni urbanistice points - Renew&Repair,#33A6FF,#00C739,10,1,1,1
+renew_points_transport_marfa.geojson,Transport de marfa points - Renew&Repair,#A6FF33,#C70039,10,1,1,1
+renew_points_transport_public.geojson,Transport public points - Renew&Repair,#33FF57,#00C739,10,1,1,1
+renew_points_zone_complexe.geojson,Zone cu nivel ridicat de complexitate points - Renew&Repair,#5733FF,#3900C7,10,1,1,1
+focus_transport_alternativ.geojson,Mijloace alternative de deplasare - Focus on BIf connections,#FF33A6,#C73900,10,1,1,1
+focus_rutier.geojson,Rutier - Focus on BIf connections,#33A6FF,#00C739,10,1,1,1
+focus_transport_feroviar.geojson,Transport feroviar - Focus on BIf connections,#A6FF33,#C70039,10,1,1,1
+focus_transport_public.geojson,Transport public - Focus on BIf connections,#33FF57,#00C739,10,1,1,1
+focus_points_rutier.geojson,Rutier points - Focus on BIf connections,#5733FF,#3900C7,10,1,1,1
+focus_points_intermodal.geojson,Structura intermodala si operatiuni urbanistice points - Focus on BIf connections,#FF33A6,#C73900,10,1,1,1
+focus_points_transport_public.geojson,Transport public points - Focus on BIf connections,#33A6FF,#00C739,10,1,1,1
+high_transport_alternativ.geojson,Mijloace alternative de deplasare - High Capacity,#A6FF33,#C70039,10,1,1,1
+high_rutier.geojson,Rutier - High Capacity,#33FF57,#00C739,10,1,1,1
+high_intermodal.geojson,Structura intermodala si operatiuni urbanistice - High capacity,#5733FF,#3900C7,10,1,1,1
+high_transport_public.geojson,Transport public - High Capacity,#FF33A6,#C73900,10,1,1,1
+high_points_managementul_traficului.geojson,Managementul traficului si parcarea points - High Capacity,#33A6FF,#00C739,10,1,1,1
+high_points_transport_alternativ.geojson,Mijloace alternative de deplasare points - High Capacity,#A6FF33,#C70039,10,1,1,1
+high_points_intermodal.geojson,Structura intermodala si operatiuni urbanistice points - High capacity,#33FF57,#00C739,10,1,1,1
+high_points_transport_public.geojson,Transport public points - High Capacity,#5733FF,#3900C7,10,1,1,1
+maxim_transport_alternativ.geojson,Mijloace alternative de deplasare - Maxim,#FF33A6,#C73900,10,1,1,1
+maxim_rutier.geojson,Rutier - Maxim,#33A6FF,#00C739,10,1,1,1
+maxim_transport_public.geojson,Transport public - Maxim,#A6FF33,#C70039,10,1,1,1
+maxim_points_managementul_traficului.geojson,Managementul traficului si parcarea points - Maxim,#33FF57,#00C739,10,1,1,1
+maxim_points_rutier.geojson,Rutier points - Maxim,#5733FF,#3900C7,10,1,1,1
+maxim_points_intermodal.geojson,Structura intermodala si operatiuni urbanistice points - Maxim,#FF33A6,#C73900,10,1,1,1
+maxim_points_transport_public.geojson,Transport public points - Maxim,#33A6FF,#00C739,10,1,1,1
+Limita Bucuresti Ilfov.geojson,Limita Bucuresti Ilfov,#33A6FF,#00C739,10,0,0,1

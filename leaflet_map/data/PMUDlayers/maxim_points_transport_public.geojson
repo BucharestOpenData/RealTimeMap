@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "maxim_points_transport_public",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": null, "Nume": "Construcția Eurogării de Nord", "Tip": "Transport public", "Buget": 50000000, "Detalii": "- HSR (High Speed Rail) pe inel de sud, între Chitila - Giurgiu - Pantelimon\n- Transformarea Gării de Nord în gară de tranzit și traversarea subterană a municipiului cu linie HSR\nCele două proiecte trebuie analizate pentru oportunitate, prin compa", "Source": "SIDU", "Maturitate": null, "Prioritate": null, "Finantare": null, "Orizont": null, "Scenario": "4", "Details_en": "Construction of the Euro Northern Train Station", "Scenario2": null, "is_sel": null, "is_sel_3ca": null, "Tip_": "TP_tren_metropolitan", "Cod_prj": "TP65", "Verif_MC": "Da" }, "geometry": { "type": "Point", "coordinates": [ 25.983613406982354, 44.502658313222419 ] } },
+{ "type": "Feature", "properties": { "id": null, "Nume": "Modernizare depouri tramvaie/mixte - Uzina Centrală", "Tip": "Transport public", "Buget": 15000000, "Detalii": null, "Source": "PMUD", "Maturitate": "Idee", "Prioritate": null, "Finantare": null, "Orizont": null, "Scenario": "4", "Details_en": "Modernisation of tramway/mixed bus depots", "Scenario2": null, "is_sel": null, "is_sel_3ca": null, "Tip_": "Transport public", "Cod_prj": "TP80", "Verif_MC": "Da" }, "geometry": { "type": "Point", "coordinates": [ 26.117625038960487, 44.454456072546016 ] } },
+{ "type": "Feature", "properties": { "id": null, "Nume": "Constructie depou nou – 100 tramvaie (zona Pantelimon)", "Tip": "Transport public", "Buget": 75000000, "Detalii": null, "Source": "SIDU", "Maturitate": "Idee", "Prioritate": null, "Finantare": null, "Orizont": null, "Scenario": "4", "Details_en": "New depot construction", "Scenario2": null, "is_sel": null, "is_sel_3ca": null, "Tip_": "Transport public", "Cod_prj": "TP163", "Verif_MC": "Da" }, "geometry": { "type": "Point", "coordinates": [ 26.181800917822496, 44.438272996642283 ] } }
+]
+}

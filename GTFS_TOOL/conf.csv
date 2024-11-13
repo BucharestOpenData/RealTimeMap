@@ -1,0 +1,24 @@
+file,overlay-name,fill-color,stroke-color,stroke-weight,popup-max-height,popup-max-width,opacity
+A0.geojson,A0,#7FFFD4,#3398ff,10,1,1,1
+Accidente_2021_2022.geojson,Accidente 2021 2022,#7FFFD4,#3398ff,10,1,1,1
+Autobaze.geojson,Autobaze,#7FFFD4,#3398ff,10,1,1,1
+Autobaze_Ilfov.geojson,Autobaze Ilfov,#7FFFD4,#3398ff,10,1,1,1
+Centura_Buftea.geojson,Centura Buftea,#7FFFD4,#3398ff,10,1,1,1
+Depouri.geojson,Depouri,#7FFFD4,#3398ff,10,1,1,1
+Lucrari.geojson,Lucrari,#7FFFD4,#3398ff,10,1,1,1
+ParkRide.geojson,ParkRide,#7FFFD4,#3398ff,10,1,1,1
+Semaforizari.geojson,Semaforizari,#7FFFD4,#3398ff,10,1,1,1
+Semaforizari_IF.geojson,Semaforizari IF,#7FFFD4,#3398ff,10,1,1,1
+Statii_Metrou.geojson,Statii Metrou,#7FFFD4,#3398ff,10,1,1,1
+Servicii_Tren_Metropolitan.geojson,Serviciu Tren,#7FFFD4,#3398ff,10,1,1,1
+Statii_Tren_Metropolitan.geojson,Statii Tren,#7FFFD4,#3398ff,10,1,1,1
+Strapungere_Ciurel.geojson,Strapungere Ciurel,#7FFFD4,#3398ff,10,1,1,1
+Substatii.geojson,Substatii,#7FFFD4,#3398ff,10,1,1,1
+retea_tramvai_detaliat.geojson,Retea tramvai detaliat,#7FFFD4,#3398ff,10,1,1,1
+retea_metrou.geojson,retea metrou,#7FFFD4,#3398ff,10,1,1,1
+retea_tramvai.geojson,retea tramvai,#7FFFD4,#3398ff,10,1,1,1
+retea_troleibuze.geojson,retea troleibuz,#7FFFD4,#3398ff,10,1,1,1
+routes_iun2024.geojson,Retea Vehicule,#7FFFD4,#3398ff,10,1,1,1
+reabilitari_linii_tramvai.geojson,Reabilitare Linii,#7FFFD4,#3398ff,10,1,1,1
+nomenclator_martie2024.geojson,Nomenclator 2024,#7FFFD4,#3398ff,10,1,1,1
+extinderi_retea_tramvai.geojson,Extindere Retea Tramvai,#7FFFD4,#3398ff,10,1,1,1

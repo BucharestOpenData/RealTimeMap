@@ -1,0 +1,16 @@
+{
+  "entryPoints": [
+    "src/app/leaflet-map/leaflet-map.component.ts",
+    "src/app/interfaces/geojson-layer-config.ts",
+    "src/app/services/data-loader.service.ts",
+    "src/app/services/bus-data.service.ts",
+    "src/app/services/bus-passenger.service.ts",
+    "src/app/services/excel-reader.service.ts",
+    "src/app/auth.service.ts"
+  ],  "out": "docs",
+  "includeVersion": true,
+  "exclude": ["**/__tests__/**"],
+  "tsconfig": "tsconfig.json",
+  "hideGenerator": true,
+  "theme": "default"
+}

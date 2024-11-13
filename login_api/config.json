@@ -1,0 +1,9 @@
+{
+  "sqlitePath": "gtfs-data.db",
+  "agencies": [
+    {
+      "path": "",
+      "exclude": []
+    }
+  ]
+}

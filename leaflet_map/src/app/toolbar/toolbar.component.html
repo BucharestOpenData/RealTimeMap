@@ -1,0 +1,9 @@
+<nav *ngIf="!isMobile" class="toolbar">
+  <div class="login-section">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <input type="text" placeholder="Username" formControlName="username" />
+      <input type="password" placeholder="Password" formControlName="password" />
+      <button type="submit" [disabled]="loginForm.invalid">Login</button>
+    </form>
+  </div>
+</nav>

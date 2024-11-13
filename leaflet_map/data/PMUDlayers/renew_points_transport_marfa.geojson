@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "renew_points_transport_marfa",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": null, "Nume": "Nodul de transport intermodal și parcul logistic București-Ilfov (Bucharest-Ilfov Multimodal Hub – BIMH) , comuna Moara Vlăsiei", "Tip": "Transport de marfă", "Buget": 218405147, "Detalii": null, "Source": "CJ IF", "Maturitate": "SF", "Prioritate": "Da", "Finantare": null, "Orizont": null, "Scenario": "1", "Details_en": "Multimodal HUB - BIMH - Moara Vlasiei - logistic suport", "is_sel": null, "Tip_": "Nod_intermod", "Cod_prj": "INTER4", "cod_prj_re": null, "Upd": "X", "Verif_MC": "Da" }, "geometry": { "type": "Point", "coordinates": [ 26.212573433928299, 44.641879001645755 ] } }
+]
+}

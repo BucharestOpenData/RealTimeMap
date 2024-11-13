@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "maxim_transport_alternativ",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": null, "Nume": "Piste de biciclete magistrale - etapa 3", "Tip": "Deplasări nemotorizate", "Buget(€)": null, "Detalii": null, "Source": null, "Orizont": null, "Maturitate": null, "Details en": null, "Prioritate": null, "FinanÈ›": null, "Fezabil": null, "Scenario": "4", "Scenario2": null, "Aeroport": null, "Tip_": "NEM_velo", "is_moderni": null, "Cod_prj": null, "Verif_MC": null, "tram_Exten": null, "cart": null, "Lungime": 1.57 }, "geometry": { "type": "MultiLineString", "coordinates": [ [ [ 26.077939458743646, 44.386510743000862 ], [ 26.079180866109176, 44.388388751653757 ], [ 26.080285972153121, 44.389452156378738 ], [ 26.085106100189314, 44.396071086679548 ], [ 26.08522690198425, 44.397530293768327 ], [ 26.086673509952693, 44.398987300270285 ] ] ] } }
+]
+}
