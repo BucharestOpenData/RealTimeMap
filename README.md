@@ -1,4 +1,4 @@
-# RealTimeMap<h2>
+<h2>
     <strong>🗺️Aplicație Angular cu Hartă și Monitorizare în Timp Real a Transportului Public&nbsp;</strong>
 </h2>
 <h2>
