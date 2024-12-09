@@ -10,6 +10,6 @@ export class DocsComponent implements OnInit {
 
   ngOnInit(): void {
     // Redirect to the static HTML file located in assets/docs/index.html
-    window.location.href = 'assets/docs/index.html';
+    window.location.href = '/assets/docs/index.html';
   }
 }
