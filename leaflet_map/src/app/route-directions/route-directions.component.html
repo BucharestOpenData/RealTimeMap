@@ -1,0 +1,29 @@
+<div class="location-finder" [ngClass]="{'with-route': placeStartCoord && placeEndCoord}">
+    <p class="title">Planifică traseul dorit.</p>
+    <div class="search-element">
+        <input type="text" placeholder="De la" [(ngModel)]="placeStart" (keyup)="getPlace(placeStart)"
+            (click)="clickedOnFrom=true" />
+        <ul id="places-start-menu" class="menu" *ngIf="(placesFound.length > 0 || clickedOnFrom) && !isOnEnd">
+            <li style="cursor: pointer" *ngFor="let place of placesFound"
+                (click)="getPlaceCoord(place.lat, place.lon, place.display_name, 'START')">
+                {{ place.display_name }}
+            </li>
+        </ul>
+    </div>
+    <div class="search-element">
+        <input type="text" placeholder="La" [(ngModel)]="placeEnd" (keyup)="getPlace(placeEnd,'END')" />
+        <ul id="places-end-menu" class="menu" *ngIf="placesFound.length > 0 && isOnEnd">
+            <li style="cursor: pointer" *ngFor="let place of placesFound"
+                (click)="getPlaceCoord(place.lat, place.lon, place.display_name, 'END')">
+                {{ place.display_name }}
+            </li>
+        </ul>
+    </div>
+
+
+    <div id="button-div">
+        <a class="location-button" [routerLink]="['']"
+            [queryParams]="{ placeStartCoordLat: placeStartCoord.latlng.lat, placeStartCoordLng: placeStartCoord.latlng.lng, placeEndCoordLat: placeEndCoord.latlng.lat, placeEndCoordLng: placeEndCoord.latlng.lng, placeStart : placeStart, placeEnd : placeEnd }"
+            target="_blank">Caută</a>
+    </div>
+</div>

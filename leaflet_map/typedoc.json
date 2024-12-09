@@ -6,7 +6,10 @@
     "src/app/services/bus-data.service.ts",
     "src/app/services/bus-passenger.service.ts",
     "src/app/services/excel-reader.service.ts",
-    "src/app/auth.service.ts"
+    "src/app/auth.service.ts",
+    "src/app/route-directions/route-directions.component.ts",
+    "src/app/types/route.types.ts"
+
   ],  "out": "docs",
   "includeVersion": true,
   "exclude": ["**/__tests__/**"],
