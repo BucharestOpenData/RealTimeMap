@@ -8,26 +8,33 @@ body {
   width: 100%;
   transform-origin: center center;
   transition: transform 0.1s ease;
-  touch-action: none; /* Ensure the map container correctly handles touch gestures */
-  z-index: 1; /* Lower z-index for the map */
+  touch-action: none;
+  /* Ensure the map container correctly handles touch gestures */
+  z-index: 1;
+  /* Lower z-index for the map */
 
 }
+
 .logo-top-right {
   position: absolute;
   top: 10px;
   right: 100px;
   width: 100px;
   height: auto;
-  z-index: 1000; /* Ensure the logo has a higher z-index than the map */
+  z-index: 1000;
+  /* Ensure the logo has a higher z-index than the map */
 }
+
 .login-overlay {
   position: fixed;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Semi-transparent dark overlay */
-  z-index: 1000; /* Ensure it's above the map */
+  background: rgba(0, 0, 0, 0.5);
+  /* Semi-transparent dark overlay */
+  z-index: 1000;
+  /* Ensure it's above the map */
   display: none;
   justify-content: center;
   align-items: center;
@@ -42,6 +49,7 @@ body {
   max-width: 300px;
   width: 100%;
 }
+
 .login-form h2 {
   margin-bottom: 20px;
   font-size: 1.5rem;
@@ -57,6 +65,7 @@ body {
   margin-bottom: 5px;
   font-weight: bold;
 }
+
 .form-group input {
   width: 100%;
   padding: 10px;
@@ -85,6 +94,7 @@ body {
 .login-button:active {
   background-color: #20639b;
 }
+
 .leaflet-control-layers.leaflet-control {
   display: none !important;
 }
@@ -96,20 +106,32 @@ body {
   background-color: transparent;
   padding: 10px;
   z-index: 1000;
-  width: 290px; /* Adjust width to your preference */
-  transition: background-color 0.3s ease; /* Smooth transition */
+  width: 290px;
+  /* Adjust width to your preference */
+  transition: background-color 0.3s ease;
+  /* Smooth transition */
 }
+
 .menu-container.menu-show {
-  background-color: white; /* White when the menu is shown */
+  background-color: white;
+  /* White when the menu is shown */
 }
+
+.search-container.menu-show {
+  background-color: white;
+  /* White when the menu is shown */
+}
+
 .layers-menu-container {
-  bottom: 75px; /* Adjust this value as needed to separate the buttons */
+  bottom: 75px;
+  /* Adjust this value as needed to separate the buttons */
   left: 15px;
 }
 
 .gtfs-menu-container {
   bottom: 15px;
   left: 15px;
+
 }
 
 .menu-button {
@@ -128,23 +150,34 @@ body {
   box-shadow: 0px 3px 5px 2px rgba(0, 0, 0, 0.1);
 
 }
+
 @media (max-width: 768px) {
   .menu-button {
-    font-size: 14px; /* Smaller font size */
-    padding: 8px 0; /* Less padding */
-    border-radius: 20px; /* Smaller border radius */
+    font-size: 14px;
+    /* Smaller font size */
+    padding: 8px 0;
+    /* Less padding */
+    border-radius: 20px;
+    /* Smaller border radius */
   }
+
   .menu-container {
-    width: 70%; /* Reduce the width of the container */
-    max-width: 180px; /* Set a maximum width for the container */
-    padding: 10px; /* Adjust padding to make it more compact */
+    width: 70%;
+    /* Reduce the width of the container */
+    max-width: 180px;
+    /* Set a maximum width for the container */
+    padding: 10px;
+    margin-bottom:100px;
+    /* Adjust padding to make it more compact */
   }
 }
+
 .menu-button:hover {
   background: linear-gradient(135deg, #5151e5 10%, #72edf2 100%);
   transform: scale(1.05);
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
 }
+
 .menu {
   display: none;
   list-style: none;
@@ -153,11 +186,16 @@ body {
   opacity: 0;
   transform: translateY(-10px);
   transition: opacity 0.3s, transform 0.3s;
-  max-height: 400px; /* Increased max height to show more items */
-  overflow-y: auto;  /* Ensure the menu is scrollable if content exceeds height */
-  overflow-x: hidden;  /* Prevent horizontal scrolling */
-  white-space: nowrap; /* Prevent text from wrapping, keeping it in a single line */
+  max-height: 400px;
+  /* Increased max height to show more items */
+  overflow-y: auto;
+  /* Ensure the menu is scrollable if content exceeds height */
+  overflow-x: hidden;
+  /* Prevent horizontal scrolling */
+  white-space: nowrap;
+  /* Prevent text from wrapping, keeping it in a single line */
 }
+
 .line-hover {
   color: purple !important;
 }
@@ -165,6 +203,7 @@ body {
 .line-active {
   color: yellow !important;
 }
+
 .menu.show {
   display: block;
   opacity: 1;
@@ -172,16 +211,22 @@ body {
 }
 
 .menu li {
-
   display: flex;
   align-items: center;
   margin-bottom: 10px;
   padding: 10px;
   border-radius: 5px;
   transition: background 0.3s, box-shadow 0.3s;
+  font-size: 16px;
+  /* Mărit font-size */
+  font-weight: 500;
+  /* Adăugat font-weight pentru mai multă vizibilitate */
+  line-height: 1.4;
+  /* Ajustat line-height pentru text mai mare */
 }
+
 .menu li.selected {
-  background: #808080	;
+  background: #808080;
   box-shadow: 0px 3px 5px 2px rgba(0, 0, 0, 0.1);
 }
 
@@ -206,13 +251,17 @@ body {
   margin-left: 10px;
   margin-right: 10px;
   cursor: pointer;
-  height: 40px; /* Increased height */
-  width: 40px;  /* Increased width */
-  border-radius: 5px; /* Added border radius for rounded corners */
+  height: 40px;
+  /* Increased height */
+  width: 40px;
+  /* Increased width */
+  border-radius: 5px;
+  /* Added border radius for rounded corners */
 }
 
 .menu input[type="range"].weight-range {
-  width: 80px; /* Adjust the width to make it smaller */
+  width: 80px;
+  /* Adjust the width to make it smaller */
   margin-left: 10px;
   cursor: pointer;
 }
@@ -247,6 +296,127 @@ body {
 .search-container input[type="text"]:focus {
   border-color: #5151e5;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+
+.location-finder input[type="text"]:focus {
+  border-color: #4747e4;
+  box-shadow: inset 0 2px 5px rgba(81, 81, 229, 0.15);
+  outline: none;
+}
+
+.location-finder input[type="text"]:hover {
+  border-color: #b8b8e6;
+}
+
+.location-button-container {
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.location-finder {
+  position: absolute;
+  right: 120px;
+  top: 10%;
+  width: 300px;
+  /* Mărit width-ul fix */
+  min-height: 100px;
+  /* Înălțime minimă fixă */
+  z-index: 1000;
+  background-color: white;
+  padding: 20px;
+  /* Mărit padding-ul pentru mai mult spațiu */
+  margin-bottom: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.location-finder input[type="text"] {
+  width: calc(100% - 24px);
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 24px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.08);
+  transition: all 0.25s ease-in-out;
+  margin-bottom: 8px;
+}
+
+/* Stilizare pentru listele de rezultate */
+#places-start-menu,
+#places-end-menu {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+  background-color: white;
+  border-radius: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  width: calc(100% - 10px);
+  transform-origin: top;
+  /* Asigură că lista se extinde în jos */
+}
+
+#places-start-menu li,
+#places-end-menu li {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#places-start-menu li:hover,
+#places-end-menu li:hover {
+  background-color: #f5f5f5;
+}
+
+/* Pentru scroll frumos */
+#places-start-menu::-webkit-scrollbar,
+#places-end-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+#places-start-menu::-webkit-scrollbar-thumb,
+#places-end-menu::-webkit-scrollbar-thumb {
+  background-color: #cdcdcd;
+  border-radius: 3px;
+}
+
+#places-start-menu::-webkit-scrollbar-track,
+#places-end-menu::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+.location-button {
+  display: block;
+  width: 100%;
+  background: linear-gradient(135deg, #63d2ff 10%, #4747dd 100%);
+  /* Ușor modificat pentru diferențiere */
+  color: #FFF;
+  border: none;
+  padding: 10px 0;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0px 3px 5px 2px rgba(0, 0, 0, 0.1);
+}
+
+.location-button:hover {
+  background: linear-gradient(135deg, #4747dd 10%, #63d2ff 100%);
+  transform: scale(1.05);
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Button container styling */
@@ -288,32 +458,45 @@ body {
 }
 
 .layers-menu-container {
-  bottom: 150px; /* Increase the value to move the container upwards */
+  bottom: 150px;
+  /* Increase the value to move the container upwards */
   left: 15px;
-  margin-top: -100px; /* Increase the value to move the container further upwards */
+  margin-top: -100px;
+  /* Increase the value to move the container further upwards */
+  position: absolute;
 }
 
 .upload-geojson-container {
-  position: fixed; /* Use fixed positioning */
-  bottom: 20px; /* Position it above the toggle layers button */
-  right: 20px; /* Align to the right edge */
-  z-index: 2;
+  position: absolute;
+  /* Use fixed positioning */
+  bottom: 20px;
+  /* Position it above the toggle layers button */
+  right: 20px;
+  /* Align to the right edge */
+  z-index: 1000;
   display: inline-block;
   border-radius: 10px;
   background-color: transparent;
   padding: 10px;
-  width: 290px; /* Adjust width to match toggle layers button */
-  transition: background-color 0.3s ease; /* Smooth transition */
+  width: 290px;
+  /* Adjust width to match toggle layers button */
+  transition: background-color 0.3s ease;
+  /* Smooth transition */
 }
-.menu-container.menu-show, .upload-geojson-container.menu-show {
-  background-color: white; /* White when the menu is shown */
+
+.menu-container.menu-show,
+.upload-geojson-container.menu-show {
+  background-color: white;
+  /* White when the menu is shown */
 }
+
 .upload-geojson-button {
   display: inline-block;
   background: linear-gradient(135deg, #0000BF 10%, #5151e5 100%);
   color: #FFF;
   border: none;
-  padding: 10px; /* Adjusted padding for a smaller button */
+  padding: 10px;
+  /* Adjusted padding for a smaller button */
   border-radius: 30px;
   cursor: pointer;
   font-size: 16px;
@@ -321,8 +504,323 @@ body {
   text-align: center;
   transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
   box-shadow: 0px 3px 5px 2px rgba(0, 0, 0, 0.1);
-  width: 100%; /* Adjusted width for a smaller button */
-  height: 40px; /* Adjusted height for a smaller button */
+  width: 100%;
+  /* Adjusted width for a smaller button */
+  height: 40px;
+  /* Adjusted height for a smaller button */
+}
+
+.map-reduced {
+  width: 100% !important;
+  transition: height 0.3s ease;
+}
+
+.map-with-sidebar {
+  width: 100% !important;
+}
+
+.graphhopper-sidebar {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 20%;
+  background: #fff;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+}
+.graphhopper-sidebar.collapsed {
+  transform: translateY(calc(100% - 48px));
+}
+.graphhopper-sidebar {
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+.graphhopper-sidebar.collapsed {
+  transform: translateY(100%);
+}
+
+.sidebar-toggle-handle {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 24px;
+  background: white;
+  border-radius: 12px 12px 0 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+  z-index: 1002;
+}
+
+.toggle-arrow {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  transition: transform 0.3s ease 0.3s; /* Delay arrow rotation until after menu slide */
+}
+
+.toggle-arrow::before,
+.toggle-arrow::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 2px;
+  background-color: #666;
+  top: 50%;
+}
+
+.toggle-arrow::before {
+  left: 50%;
+  transform: translate(-100%, -50%) rotate(45deg);
+}
+
+.toggle-arrow::after {
+  right: 50%;
+  transform: translate(100%, -50%) rotate(-45deg);
+}
+
+.collapsed .toggle-arrow::before {
+  transform: translate(-100%, -50%) rotate(-45deg);
+}
+
+.collapsed .toggle-arrow::after {
+  transform: translate(100%, -50%) rotate(45deg);
+}
+
+/* Rest of your existing styles */
+.trip-details {
+  padding-top: 32px;
+}
+.trip-details {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.segment-controls {
+  margin: 8px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #666;
+  font-size: 13px;
+}
+
+.arrow-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.sidebar-close-element {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.sidebar-close-button {
+  margin: 5px;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+}
+
+.sidebar-close-image {
+  max-width: 15px;
+  min-height: 15px;
+}
+
+.arrow-icon {
+  width: 12px;
+  height: 12px;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.arrow-icon::before {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #666;
+  border-bottom: 2px solid #666;
+  transform: rotate(45deg);
+  transition: transform 0.3s ease;
+}
+
+.arrow-icon.open::before {
+  transform: rotate(-135deg);
+}
+
+.stops-count {
+  color: #666;
+  margin-left: 4px;
+}
+
+/* Restul stilurilor pentru lista de stații rămân la fel */
+.stops-list {
+  margin-left: 10px;
+  border-left: 2px dashed #ddd;
+  padding-left: 15px;
+  margin-top: 8px;
+}
+
+.sidebar-toggle-arrow{
+  max-width: 18px;
+}
+
+.stop-item {
+  display: grid;
+  grid-template-columns: 20px 60px 1fr;
+  gap: 10px;
+  padding: 6px 0;
+  align-items: center;
+  font-size: 13px;
+}
+
+.stop-marker {
+  width: 8px;
+  height: 8px;
+  background: #999;
+  border-radius: 50%;
+  position: relative;
+}
+
+.stop-marker.start {
+  background: #4CAF50;
+  width: 12px;
+  height: 12px;
+}
+
+.stop-marker.end {
+  background: #f44336;
+  width: 12px;
+  height: 12px;
+}
+
+
+.trip-summary {
+  cursor: pointer;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.trip-summary:hover {
+  background: #ccced1;
+  transform: scale(1.02);
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.time-range {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.trip-duration {
+  color: #666;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.trip-info {
+  color: #666;
+  font-size: 14px;
+}
+
+.trip-segments {
+  display: flex;
+  flex-direction: column;
+}
+
+.segment {
+  display: grid;
+  grid-template-columns: 60px 30px 1fr;
+  gap: 10px;
+  padding: 10px 0;
+  border-left: 3px solid transparent;
+}
+
+.segment.walk {
+  border-left-color: #4A90E2;
+}
+
+.segment.transit {
+  border-left-color: #2C3E50;
+}
+
+.segment-time {
+  font-weight: bold;
+  color: #333;
+}
+
+.segment-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.segment-info {
+  font-size: 14px;
+}
+
+.segment-name {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.segment-details,
+.stops-info {
+  color: #666;
+  font-size: 12px;
+}
+
+.line-info {
+  margin: 4px 0;
+}
+
+.line-number {
+  background: #2C3E50;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-right: 6px;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .map-with-sidebar {
+    width: 100% !important;
+    height: 100vh !important;
+  }
+
+  .graphhopper-sidebar {
+    top: 47vh;
+    bottom:20%;
+    width: 100%;
+    height: 40vh;
+  }
+}
+
+.with-route {
+  /* Adaugă orice stiluri suplimentare pentru location finder când există rută */
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 15px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .upload-geojson-button:hover {
@@ -334,6 +832,7 @@ body {
 .upload-menu {
   margin-top: 10px;
 }
+
 .zoom-to-location-button {
   position: absolute;
   bottom: 990px;
@@ -347,8 +846,10 @@ body {
 }
 
 .zoom-to-location-button img {
-  width: 40px; /* Adjust size as needed */
-  height: 40px; /* Adjust size as needed */
+  width: 40px;
+  /* Adjust size as needed */
+  height: 40px;
+  /* Adjust size as needed */
 }
 
 .zoom-to-location-button:hover {
@@ -379,6 +880,7 @@ body {
   transform: scale(1.05);
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
 }
+
 .uploaded-geojson-list {
   list-style: none;
   padding: 0;
@@ -415,6 +917,53 @@ body {
   background: #ff1a1a;
   transform: scale(1.05);
   box-shadow: 0px 3px 5px 2px rgba(0, 0, 0, 0.1);
+}
+@media screen and (max-width: 768px) {
+  .location-finder {
+    right: 10px; /* Mut mai în dreapta */
+    top: 10%; /* Un pic mai sus */
+    width: 250px; /* Mai îngust */
+    padding: 15px; /* Padding mai mic */
+    min-height: 80px; /* Înălțime minimă mai mică */
+  }
+
+  .location-finder input[type="text"] {
+    width: calc(100% - 20px); /* Input mai îngust */
+    padding: 8px 10px; /* Padding mai mic */
+    font-size: 13px; /* Font mai mic */
+  }
+
+  #places-start-menu,
+  #places-end-menu {
+    max-height: 150px; /* Lista de rezultate mai mică */
+    width: calc(100% - 8px);
+  }
+
+  #places-start-menu li,
+  #places-end-menu li {
+    padding: 6px 10px; /* Padding mai mic pentru items */
+    font-size: 13px; /* Font mai mic pentru items */
+  }
+
+  .location-button {
+    padding: 8px 0; /* Buton mai mic */
+    font-size: 14px; /* Font mai mic pentru buton */
+  }
+
+  .location-button-container {
+    padding: 12px; /* Container mai mic */
+  }
+}
+
+/* Pentru ecrane foarte mici (telefoane mai mici) */
+@media screen and (max-width: 380px) {
+  .location-finder {
+    width: 200px; /* Și mai îngust pentru telefoane mici */
+    right: 5px;
+    overflow-x: visible; /* Ensures content can slide outside */
+
+  }
+
 }
 
 

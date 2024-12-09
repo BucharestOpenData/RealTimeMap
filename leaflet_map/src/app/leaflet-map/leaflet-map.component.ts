@@ -9,17 +9,25 @@ import {
   Input,
   Output,
   EventEmitter,
+  HostListener,
 } from "@angular/core";
 import {
-  isPlatformBrowser,
+  DatePipe, DecimalPipe,
+  isPlatformBrowser, KeyValuePipe,
   NgClass,
   NgForOf,
   NgIf,
-  NgOptimizedImage,
+  NgOptimizedImage, NgStyle,
+
 } from "@angular/common";
+import {
+  RouteResponse,
+  RouteLeg,
+  Stop
+} from '../types/route.types';
 import { DataLoaderService } from "../services/data-loader.service";
 import { GeoJSONLayerConfig } from "../interfaces/geojson-layer-config";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HttpClient, HttpClientModule, HttpParams } from "@angular/common/http";
 import { BusDataService } from "../services/bus-data.service";
 import { ExcelReaderService } from "../services/excel-reader.service";
 import * as L from "leaflet";
@@ -31,6 +39,10 @@ import Swal from "sweetalert2";
 import { Renderer2 } from "@angular/core";
 import { catchError, throwError } from "rxjs"; // Import for nice popup alerts
 import "leaflet.locatecontrol"; // Import plugin
+import { RouteDataService } from "../services/route-data.service";
+import { FeatureGroup } from "leaflet";
+import { ActivatedRoute } from '@angular/router';
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 
 @Component({
@@ -44,9 +56,29 @@ import "leaflet.locatecontrol"; // Import plugin
     FormsModule,
     NgOptimizedImage,
     NgClass,
+    DatePipe,
+    DecimalPipe,
+    NgStyle,
+    KeyValuePipe,
   ],
   styleUrls: ["./leaflet-map.component.css"],
+  animations: [
+    trigger('slideAnimation', [
+      state('in', style({
+        transform: 'translateX(0)',
+        opacity: 1
+      })),
+      state('out', style({
+        transform: 'translateX(100%)',
+        opacity: 0.8
+      })),
+      transition('in => out', animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+      transition('out => in', animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
+    ])
+  ]
+
 })
+
 export class LeafletMapComponent implements OnInit, OnDestroy {
   private excluded_features_from_layer = [
     {
@@ -141,23 +173,35 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
       exclude_all: false,
     },
   ];
+  showRouteSidebar: boolean = false;
+  public placeStart: string = "";
+  public placesFound: any[] = [];
+  public clickedOnFrom = false;
+  public isOnEnd = false;
+  public placeEnd: string = "";
+  public placeStartCoord: any;
+  public placeEndCoord: any;
+  public isDebug = true;
   private nightRoutesTerminals: any[] = [];
   private nightBusStationMarkers: any[] = [];
   private lastBusPositions: any[] = [];
-  private currentLocation = { latlng: { lat: null, lng: null } };
+  public currentLocation = { latlng: { lat: null, lng: null } };
   private lc;
   private firstLoad = false;
   private nearbyStations: GeoJSON.Feature<GeoJSON.Point>[] = [];
   private oldNearbyStations: GeoJSON.Feature<GeoJSON.Point>[] = [];
-  private nightBusRoutesLoaded = false;
+  public nightBusRoutesLoaded = false;
   private hasZoomed = false; // Flag to ensure we only zoom once
   private deviceOrientationEvent: any;
+  public walkPath: L.Polyline | null = null;
+  public transitPath: L.Polyline | null = null;
+  public transitPathGroup = new L.FeatureGroup();
+  public walkPathGroup = new L.FeatureGroup();
+  public stopMarkers: L.Marker[] = [];
   private nightRoutesGroup = new L.FeatureGroup();
-  private selectedRoutesGroup = new L.FeatureGroup();
+  public selectedRoutesGroup = new L.FeatureGroup();
   private selectedRoutesGroupLayers: any[] = [];
-  private startAngle: number = 0; // To track the initial angle
-  private currentRotation: number = 0; // To track the current rotation applied
-  private isRotating = false; // Flag to track if we are in the middle of a rotation
+  public graphhopperStopMarkers: L.Marker[] = [];
   public loginData = { username: "", password: "" }; // Store login data
   private map: any;
   private layersControl: any = {};
@@ -167,7 +211,8 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
   private autoSaveInterval: any;
   private busMarkers: any[] = [];
   private busDataInterval: any;
-  public routeDetails: any[] = [];
+  public routeDetails: any = null;
+  public directionRouteDetails: any = null;
   public filteredRouteDetails: any[] = [];
   public showMenu: boolean = false;
   public showGtfsMenu: boolean = false;
@@ -179,6 +224,7 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
   private currentRouteLayer: any; // Store the current route layer
   private currentStationMarkers: any[] = []; // Store the current station markers
   public selectedRouteShortName: string | null = null;
+  public selectedStationMarkerCode: L.Marker | null = null;
   public showUploadMenu: boolean = false;
   uploadedGeoJsonLayers: any[] = [];
   public selectedRoutes: number[] = [];
@@ -186,7 +232,10 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
   private routeLayers: Map<number, any> = new Map();
   private stationMarkers: Map<number, any[]> = new Map();
   private currentLocationMarker: L.Marker | null = null;
+  private startLocationMarker: L.Marker | null = null;
+  private endLocationMarker: L.Marker | null = null;
   private tData: any[] = [];
+  public  showRouteArrow: boolean = false;
   public uploadedGeoJsonFiles: {
     data: any;
     name: string;
@@ -293,11 +342,13 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
     private dataLoader: DataLoaderService,
     private http: HttpClient,
     private busDataService: BusDataService,
+    private routeDataService: RouteDataService,
     private busPassengerService: BusPassengerService,
     private excelReaderService: ExcelReaderService,
     private snackBar: MatSnackBar, // Add this dependency
     private authService: AuthService, // Inject the AuthService
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private route: ActivatedRoute
   ) {
     if (isPlatformBrowser(this.platformId)) {
       this.isMobile =
@@ -311,7 +362,6 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     if (this.isBrowser) {
       const { default: L } = await import("leaflet");
-      await import("@geoman-io/leaflet-geoman-free");
       this.initMap(L);
 
       this.autoSaveInterval = setInterval(() => {
@@ -351,6 +401,38 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
     this.checkGuestSession(); // Check and initialize guestSession
     //this.addGtfsButton();
     this.loadNightBus();
+    this.route.queryParams.subscribe(paramMap => {
+      this.placeStartCoord = { latlng: { lat: paramMap['placeStartCoordLat'], lng: paramMap['placeStartCoordLng'] } };
+      this.placeEndCoord = { latlng: { lat: paramMap['placeEndCoordLat'], lng: paramMap['placeEndCoordLng'] } };
+      const arrowIconStart = L.icon({
+        iconUrl: "assets/location-pin-start.png",
+        shadowUrl: "assets/marker-shadow.png",
+        iconSize: [50, 50],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [50, 50],
+      });
+      const arrowIconFinish = L.icon({
+        iconUrl: "assets/location-pin-finish.png",
+        shadowUrl: "assets/marker-shadow.png",
+        iconSize: [50, 50],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [50, 50],
+      });
+      this.startLocationMarker = L.marker([this.placeStartCoord.latlng.lat, this.placeStartCoord.latlng.lng], {
+        icon: arrowIconStart,
+      }).addTo(this.map);
+      this.endLocationMarker = L.marker([this.placeEndCoord.latlng.lat, this.placeEndCoord.latlng.lng], {
+        icon: arrowIconFinish,
+      }).addTo(this.map);
+      //@ts-ignore
+      this.placeStart = paramMap['placeStart'];
+      //@ts-ignore
+      this.placeEnd = paramMap['placeEnd'];
+      this.getDirections();
+
+    });
   }
 
   ngOnDestroy(): void {
@@ -363,13 +445,19 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
   }
 
   //@ViewChild("fileInput") fileInput!: ElementRef;
+  @HostListener('window:keyup', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.key == "ArrowDown") {
+      this.isDebug = !this.isDebug;
+    }
+  }
 
   addLogoToMap(): void {
     const mapContainer = document.getElementById("map");
     if (mapContainer) {
       // Create the image element
       const logoImg = this.renderer.createElement("img");
-      this.renderer.setAttribute(logoImg, "src", "assets/TPBI.png");
+      this.renderer.setAttribute(logoImg, "src", "./assets/TPBI-SCURT-GRI.png");
       this.renderer.setAttribute(logoImg, "alt", "TPBI Logo");
       this.renderer.addClass(logoImg, "logo-top-right");
 
@@ -383,7 +471,10 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
       this.map = L.map("map", {
         preferCanvas: true,
         tap: false,
-        zoomAnimation: true,
+        zoomAnimation: false,  // Changed to false for better performance
+        fadeAnimation: false,  // Disable fade animations
+        markerZoomAnimation: false,  // Disable marker zoom animations
+        transform3DLimit: 0,  // Reduce 3D transforms
         center: [44.4268, 26.1025],
         zoom: 13,
         rotate: true,
@@ -391,10 +482,18 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
           closeOnZeroBearing: false,
         },
         shiftKeyRotate: true,
-        renderer: L.canvas({ tolerance: 15 }),
+        renderer: L.canvas({
+          tolerance: 15,
+          padding: 0.5  // Add padding for better rendering
+        }),
         touchZoom: true,
         trackResize: true,
-        updateWhenZooming: true
+        updateWhenZooming: true,
+        wheelDebounceTime: 40,  // Debounce wheel events
+        zoomSnap: 0.5,  // Smoother zooming
+        maxBoundsViscosity: 1.0,  // Better bounds behavior
+        worldCopyJump: true,  // Better handling of world wrapping
+        bounceAtZoomLimits: false  // Prevent bouncing at zoom limits
       });
 
       // this.map.locate({
@@ -406,7 +505,7 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
       //this.getUserLocationAndDisplayNearbyStations();
       // Define the default tile layer (OpenStreetMap)
       const defaultLayer = L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         {
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
           rotate: true, // Enable rotation on this tile layer
@@ -666,46 +765,46 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
 
       // Traffic toggle button control
 
-      if (!this.isMobile) {
-        // Add Leaflet.pm controls to the map
-        (this.map as any).pm.addControls({
-          position: "topright",
-          drawMarker: true,
-          drawPolygon: true,
-          drawPolyline: true,
-          drawCircle: true,
-          drawCircleMarker: true,
-          drawRectangle: true,
-          editMode: true,
-          dragMode: true,
-          cutPolygon: true,
-          removalMode: true,
-        });
+      /* if (!this.isMobile) {
+         // Add Leaflet.pm controls to the map
+         (this.map as any).pm.addControls({
+           position: "topright",
+           drawMarker: true,
+           drawPolygon: true,
+           drawPolyline: true,
+           drawCircle: true,
+           drawCircleMarker: true,
+           drawRectangle: true,
+           editMode: true,
+           dragMode: true,
+           cutPolygon: true,
+           removalMode: true,
+         });
 
-        // Handle creation of new layers
-        this.map.on("pm:create", (e: any) => {
-          const layer = e.layer;
-          this.map.pm.addLayer(layer);
-          this.saveMapData();
-        });
+         // Handle creation of new layers
+         this.map.on("pm:create", (e: any) => {
+           const layer = e.layer;
+           this.map.pm.addLayer(layer);
+           this.saveMapData();
+         });
 
-        // Handle removal of layers
-        this.map.on("pm:remove", (e: any) => {
-          this.saveMapData();
-        });
+         // Handle removal of layers
+         this.map.on("pm:remove", (e: any) => {
+           this.saveMapData();
+         });
 
-        // Handle the drawing start event to apply custom icon to markers
-        this.map.on("pm:drawstart", (e: any) => {
-          if (e.shape === "Marker") {
-            this.map.pm.setGlobalOptions({
-              markerStyle: {
-                icon: customIcon,
-              },
-            });
-          }
-        });
-      }
-
+         // Handle the drawing start event to apply custom icon to markers
+         this.map.on("pm:drawstart", (e: any) => {
+           if (e.shape === "Marker") {
+             this.map.pm.setGlobalOptions({
+               markerStyle: {
+                 icon: customIcon,
+               },
+             });
+           }
+         });
+       }
+ */
       // Custom toggle switch control
       L.Control.ToggleSwitch = L.Control.extend({
         onAdd: function (map: { removeLayer: (arg0: any) => void }) {
@@ -1252,7 +1351,7 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
           // Add popup content
 
           // @ts-ignore
-          this.addPopupContent(layer, routeShortName, "#3388ff", 1);
+          this.addPopupContent(layer, routeShortName, "#3388ff", 1, true);
           // Cast the layer to L.Path to ensure we can call setStyle on it
           const pathLayer = layer as L.Path;
           // Add hover effect
@@ -1452,23 +1551,36 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
                   } else {
                     arrivingTimeText = `<span style="color: white; font-weight: bold;">${arrivingTimeInMinutes} min</span>`;
                   }
-
-                  return `
-                            <div style="background-color: ${line.color}; color: white; padding: 2px 4px; border-radius: 3px; margin-bottom: 2px;">
+                  const nextArrivalButton = document.createElement("div");
+                  nextArrivalButton.innerHTML = `<div style="cursor : pointer; background-color: ${line.color}; color: white; padding: 2px 4px; border-radius: 3px; margin-bottom: 2px;">
                                 ${line.name} - ${line.directionName}
                                 <span style="background-color: green; padding: 2px 4px; border-radius: 3px; margin-left: 5px;">
                                     ${arrivingTimeText}
                                 </span>
                             </div>`;
-                })
-                .join("") || "No arrivals";
+                  nextArrivalButton.onclick = e => {
+                    if (this.nightBusRoutesLoaded === false && this.showRouteSidebar === false) {
+                      const currentLineId = line.id;
+                      const isAlreadySelected = this.selectedRoutesGroupLayers.some(route => route.shortName === currentLineId);
+
+                      if (isAlreadySelected) {
+                        this.selectedRoutes = [];
+                        this.clearAllSelectionAndRestartFollowing(false);
+                      } else {
+                        this.clearAllSelectionAndRestartFollowing(false);
+                        setTimeout(() => {
+                          //@ts-ignore
+                          this.selectedStationMarkerCode = properties["Cod Statie"];
+                          this.selectRoute(parseInt(currentLineId));
+
+                        }, 100);
+                      }
+                    }
+                  };
+                  return nextArrivalButton;
+                });
 
             // If there are no valid arrivals, remove the marker and stop updating
-            if (nextArrivals === "No arrivals") {
-              //this.map.removeLayer(marker);
-
-              //return;
-            }
 
             // Construct the popup content
             let popupContent = `
@@ -1488,15 +1600,29 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
             popupContent += `
                         <strong>Mod Transp:</strong> ${properties["Mod Transp"]}<br>
                         <strong>Linii (La ora):</strong><br>
-                        ${nextArrivals}
                         </div>
                     `;
+            let nextArrivalParentDiv = document.createElement("div");
+            if (nextArrivals.length === 0) {
+              let noArrivalsDiv = document.createElement("div");
+              noArrivalsDiv.innerHTML = "No arrivals";
+              nextArrivalParentDiv.appendChild(noArrivalsDiv);
+            } else {
+              nextArrivals.forEach(e => {
+                nextArrivalParentDiv.appendChild(e);
+              });
+            }
 
+            let htmlPopupContent = document.createElement("div");
+            htmlPopupContent.innerHTML = popupContent;
+            htmlPopupContent.appendChild(nextArrivalParentDiv);
+            marker.bindPopup(htmlPopupContent);
             // @ts-ignore
-            marker.getPopup().setContent(popupContent).update();
+            //marker.getPopup().setContent(popupContent).update();
+
           } else {
             // If there's no valid response, remove the marker
-            this.map.removeLayer(marker);
+            //this.map.removeLayer(marker);
             console.error("Expected an array of lines but received:", response);
           }
         },
@@ -1537,18 +1663,26 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
   private addPopupContent(
     layer: any,
     properties: any,
-    isMultiLineString: boolean
+    isMultiLineString: boolean,
+    isRouteNameOnly = false
   ) {
     const popupContent = document.createElement("div");
 
-    // Display route information in the popup
-    for (const key in properties) {
-      if (properties.hasOwnProperty(key)) {
-        const propertyDiv = document.createElement("div");
-        propertyDiv.innerHTML = `<strong>${key}:</strong> ${properties[key]}`;
-        popupContent.appendChild(propertyDiv);
+    if (isRouteNameOnly) {
+      const propertyDiv = document.createElement("div");
+      propertyDiv.innerHTML = `<strong>Linia:</strong> ${properties}`;
+      popupContent.appendChild(propertyDiv);
+    } else {
+      // Display route information in the popup
+      for (const key in properties) {
+        if (properties.hasOwnProperty(key)) {
+          const propertyDiv = document.createElement("div");
+          propertyDiv.innerHTML = `<strong>${key}:</strong> ${properties[key]}`;
+          popupContent.appendChild(propertyDiv);
+        }
       }
     }
+
 
     // Only add style controls for multilines or polylines
     if (isMultiLineString) {
@@ -1870,7 +2004,7 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
         data.forEach((bus) => {
           let routeId;
           let isPV = false;
-          if (bus.vehicle.trip.routeId.startsWith("PV")) {
+          if (bus.vehicle !== undefined && bus.vehicle.trip !== undefined && bus.vehicle.trip.routeId !== undefined && bus.vehicle.trip.routeId.startsWith("PV")) {
             const routeIdMatch = bus.vehicle.trip.routeId.match(/_(\d+)/);
             routeId = routeIdMatch ? parseInt(routeIdMatch[1]) : NaN;
             isPV = true;
@@ -2085,6 +2219,447 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
     return bgColor;
   }
 
+
+  public getDirections() {
+    const currentDateAndTime = new Date();
+    const dateString = new Date(currentDateAndTime.getTime() -
+      (currentDateAndTime.getTimezoneOffset() * 60000)).toISOString();
+
+    const point1 = `${this.placeStartCoord.latlng.lat},${this.placeStartCoord.latlng.lng}`;
+    const point2 = `${this.placeEndCoord.latlng.lat},${this.placeEndCoord.latlng.lng}`;
+
+    const params = {
+      "pt.earliest_departure_time": dateString,
+      "pt.arrive_by": "false",
+      "pt.profile": "false",
+      "locale": "ro",
+      "profile": "pt",
+      "instructions": "true",
+      "calc_points": "true",
+      "pt.profile_duration": "PT150M",
+      "pt.limit_street_time": "PT15M",
+      "pt.beta_access_time": "1",
+      "pt.access_profile": "foot",
+      "pt.egress_profile": "foot",
+      "pt.beta_egress_time": "1",
+      "pt.ignore_transfers": "false"
+    };
+
+    const points_uri = new URLSearchParams(params);
+    points_uri.append('point', point1);
+    points_uri.append('point', point2);
+
+    this.http.get<RouteResponse>(`/api/Route/${points_uri}`).subscribe({
+      next: (data) => {
+        console.log('Route data:', data);
+        this.clearRoutes();
+        this.directionRouteDetails = this.prepareRoutes(data);
+
+        // Selectează și afișează prima rută
+        if (this.directionRouteDetails && this.directionRouteDetails.paths && this.directionRouteDetails.paths.length > 0) {
+          const firstRoute = this.directionRouteDetails.paths[0];
+
+          // Clear și adaugă ruta pe hartă
+          this.clearRoutes(false);
+          this.addRouteToMap(firstRoute);
+
+          // Toggle route details
+          this.directionRouteDetails.paths.forEach((route: any) => {
+            route.showRouteDetails = (route === firstRoute);
+          });
+
+          // Toggle stops pentru fiecare segment de transport public
+          if (firstRoute.legs) {
+            firstRoute.legs.forEach((leg: any) => {
+              if (leg.type === 'pt') {
+                leg.showStops = true;
+              }
+            });
+          }
+        }
+
+        this.showRouteSidebar = true;
+      },
+      error: (error) => {
+        console.error('Routing error:', error);
+      }
+    });
+  }
+  public getPlace(place, type = "START") {
+    if (place.length > 2 && place !== "Locația curentă") {
+      this.clickedOnFrom = false;
+      let viewbox = "25.824423,44.234494,26.458471,44.768927";
+      let params = {
+        "viewbox": viewbox,
+        "bounded": "1",
+        "format": "json",
+        "q": place
+      };
+      //@ts-ignore
+      this.http.get(`/api/searchPlace`, { params: params }).subscribe(data => {
+        console.log(data);
+        //@ts-ignore
+        this.placesFound = data;
+      });
+    } else {
+      this.placesFound = [];
+      if (type === "START") {
+        this.clickedOnFrom = true;
+        this.isOnEnd = false;
+      } else {
+        this.isOnEnd = true;
+        this.clickedOnFrom = false;
+      }
+    }
+  }
+
+
+  public getCurrentLocationPlace() {
+    this.placeStartCoord = this.currentLocation;
+    this.placeStart = "Locația curentă";
+    this.clickedOnFrom = false;
+    this.placesFound = [];
+  }
+
+  public getPlaceCoord(lat, lon, name, type) {
+    switch (type) {
+      case "END":
+        if (this.endLocationMarker) {
+          this.endLocationMarker.removeFrom(this.map);
+        }
+        this.placeEndCoord = { latlng: { lat: lat, lng: lon } };
+        this.placeEnd = name;
+        this.clickedOnFrom = false;
+        this.placesFound = [];
+        this.map.flyTo([lat, lon], 15);
+        let toFromFeatureGroup = new L.FeatureGroup();
+        toFromFeatureGroup.addLayer(new L.Marker([lat, lon]));
+        if (this.placeStartCoord) {
+          toFromFeatureGroup.addLayer(new L.Marker([this.placeStartCoord.latlng.lat, this.placeStartCoord.latlng.lng]));
+          this.map.flyToBounds((toFromFeatureGroup.getBounds()));
+        }
+        break;
+      case "START":
+        if (this.startLocationMarker) {
+          this.startLocationMarker.removeFrom(this.map);
+        }
+        this.placeStartCoord = { latlng: { lat: lat, lng: lon } };
+        this.placeStart = name;
+        this.clickedOnFrom = false;
+        this.placesFound = [];
+        this.map.flyTo([lat, lon], 15);
+        break;
+    }
+    const arrowIconStart = L.icon({
+      iconUrl: "assets/location-pin-start.png",
+      shadowUrl: "assets/marker-shadow.png",
+      iconSize: [41, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41],
+    });
+    const arrowIconFinish = L.icon({
+      iconUrl: "assets/location-pin-finish.png",
+      shadowUrl: "assets/marker-shadow.png",
+      iconSize: [41, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41],
+    });
+    if (type === "START") {
+      this.startLocationMarker = L.marker([lat, lon], {
+        icon: arrowIconStart,
+      }).addTo(this.map);
+    } else {
+      this.endLocationMarker = L.marker([lat, lon], {
+        icon: arrowIconFinish,
+      }).addTo(this.map);
+    }
+  }
+  private getShortNameFromRouteId(routeId: string | undefined): string {
+    if (!routeId) return '';
+
+    // Convertim route_id în număr pentru a-l folosi în routeMap
+    const numericRouteId = parseInt(routeId);
+    if (isNaN(numericRouteId)) {
+      return routeId.split("_")[1];
+    }
+
+    // Verificăm dacă avem ruta în routeMap
+    const shortName = this.routeMap.get(numericRouteId);
+    if (shortName) {
+      return shortName; // Returnăm direct shortName-ul din map
+    }
+
+    // Fallback la route_id dacă nu găsim în map
+    return routeId;
+  }
+
+
+  private prepareRoutes(data: RouteResponse) {
+
+    for (let i = 0; i < data.paths.length; i++) {
+      for (let j = 0; j < data.paths[i].legs.length; j++) {
+        if (data.paths[i].legs[j].departure_location === "Walk") {
+          let total_duration = 0;
+          if (data.paths[i].legs[j].instructions !== undefined)
+            //@ts-ignore
+            for (let x = 0; x < data.paths[i].legs[j].instructions.length; x++) {
+              //@ts-ignore
+              total_duration += data.paths[i].legs[j].instructions[x].time;
+            }
+          data.paths[i].legs[j].total_time = total_duration / 60000 < 1 ? 1 : total_duration / 60000;
+        }
+      }
+    }
+    data.paths[0].legs[0].instructions
+    return data;
+  }
+
+
+  private addRouteToMap(path: any) {
+    const routeColors = new Map<string, string>();
+
+    // Procesăm legs și adăugăm shortName corect
+    path.legs = path.legs.map((leg: RouteLeg) => {
+      if (leg.type === 'pt' && leg.route_id) {
+        leg.shortName = this.getShortNameFromRouteId(leg.route_id);
+      }
+      leg.showStops = false;
+      return leg;
+    });
+
+    path.legs.forEach((leg: RouteLeg) => {
+      if (leg.type === 'walk') {
+        this.walkPath = L.polyline(
+          leg.geometry.coordinates.map(([lng, lat]) => [lat, lng]),
+          {
+            color: '#4A90E2',
+            weight: 4,
+            dashArray: '5, 10',
+            opacity: 0.8
+          }
+        );
+        this.walkPathGroup.addLayer(this.walkPath);
+        console.log(this.walkPathGroup);
+      }
+      else if (leg.type === 'pt') {
+        const routeKey = leg.shortName || leg.route_id || '';
+        let lineColor = routeColors.get(routeKey);
+        if (!lineColor) {
+          lineColor = this.getRandomColor();
+          routeColors.set(routeKey, lineColor);
+        }
+
+        this.transitPath = L.polyline(
+          leg.geometry.coordinates.map(([lng, lat]) => [lat, lng]),
+          {
+            color: lineColor,
+            weight: 5,
+            opacity: 0.8
+          }
+        )
+        leg.routeColor = lineColor;
+        this.transitPathGroup.addLayer(this.transitPath);
+        console.log(this.transitPathGroup);
+
+        if (leg.stops) {
+          this.addGraphhopperStopMarkers(leg.stops, leg.shortName || '');
+        }
+      }
+    });
+    this.walkPathGroup.addTo(this.map);
+    this.transitPathGroup.addTo(this.map);
+
+    const bounds = L.latLngBounds([]);
+    this.map.eachLayer((layer) => {
+      if (layer instanceof L.Polyline) {
+        bounds.extend(layer.getBounds());
+      } else if (layer instanceof L.Marker) {
+        bounds.extend(layer.getLatLng());
+      }
+    });
+
+    if (bounds.isValid()) {
+      this.map.fitBounds(bounds, { padding: [50, 50] });
+    }
+
+  }
+  private addStopMarkers(stops: Stop[], leg: RouteLeg) {
+    const busIcon = L.icon({
+      iconUrl: './assets/statie_autobuz.png',
+      iconSize: [24, 24],
+      iconAnchor: [12, 12],
+      popupAnchor: [0, -12]
+    });
+
+    stops.forEach((stop, index) => {
+      const [lng, lat] = stop.geometry.coordinates;
+      const isFirstStop = index === 0;
+      const isLastStop = index === stops.length - 1;
+
+      // Adaugă mai multe informații în popup pentru stații
+      const marker = L.marker([lat, lng], { icon: busIcon })
+        .bindPopup(`
+          <strong>${stop.stop_name}</strong><br>
+          ${isFirstStop ? '<strong>Stație de pornire</strong><br>' : ''}
+          ${isLastStop ? '<strong>Stație finală</strong><br>' : ''}
+          ${stop.departure_time ? 'Plecare: ' + new Date(stop.departure_time).toLocaleTimeString('ro-RO') : ''}
+          ${stop.arrival_time ? '<br>Sosire: ' + new Date(stop.arrival_time).toLocaleTimeString('ro-RO') : ''}
+        `)
+        .addTo(this.map);
+
+      this.stopMarkers.push(marker);
+    });
+  }
+  public clearRoutes(removeSidebar = true, removeMarkers = false) {
+    this.showRouteArrow=false;
+    if (removeMarkers) {
+      this.endLocationMarker?.removeFrom(this.map);
+      this.startLocationMarker?.removeFrom(this.map);
+    }
+    if (removeSidebar)
+      this.showRouteSidebar = false;
+    this.walkPathGroup.remove();
+    this.walkPathGroup.clearLayers();
+    if (this.walkPath) {
+      this.walkPath = null;
+    }
+    this.transitPathGroup.clearLayers();
+    if (this.transitPath) {
+      this.transitPath = null;
+    }
+
+    // Curățăm markerele GraphHopper
+    this.graphhopperStopMarkers.forEach(marker => {
+      this.map.removeLayer(marker);
+    });
+    this.graphhopperStopMarkers = [];
+
+    const routeInfo = document.querySelector('.route-info');
+    if (routeInfo) {
+      routeInfo.remove();
+    }
+  }
+  getCurrentTime(): Date {
+    return new Date();
+  }
+
+
+  convertMillisecondsToTime(route) {
+    var time = route.time;
+    // Calculează orele și minutele
+    let hours = Math.floor(time / 3600000); // 1 oră = 3600000 milisecunde
+    let minutes = Math.floor((time % 3600000) / 60000); // 1 minut = 60000 milisecunde
+
+    // Dacă timpul este mai mic de o oră, returnează doar minutele
+    if (hours < 1) {
+      return `${String(minutes).padStart(2, '0')} min`; // Doar minutele cu 2 cifre
+    }
+
+    // Formatează orele și minutele cu 2 cifre și returnează în formatul HH:mm
+    //@ts-ignore
+    hours = String(hours).padStart(2, '0'); // Asigură-te că orele au 2 caractere
+    //@ts-ignore
+    minutes = String(minutes).padStart(2, '0'); // Asigură-te că minutele au 2 caractere
+
+    return `${hours}:${minutes} ore`;
+  }
+
+  calculateSegmentTime(leg: any, index: number, legs: any[]): Date {
+    const startTime = new Date(this.getCurrentTime());
+    let accumulatedTime = 0;
+
+    // Iterăm prin toate legs până la indexul curent
+    for (let i = 0; i < index; i++) {
+      const currentLeg = legs[i];
+
+      if (currentLeg.type === 'walk') {
+        // Pentru walk, iterăm prin instructions până găsim "Obiectiv atins"
+        let walkTime = 0;
+        currentLeg.instructions.forEach((instruction: any) => {
+          if (instruction.text !== "Obiectiv atins") {
+            walkTime += instruction.time;
+          }
+        });
+        accumulatedTime += walkTime / 1000; // convertim în secunde
+      }
+      else if (currentLeg.type === 'pt' && currentLeg.stops) {
+        // Pentru PT, luăm timpul între prima și ultima stație
+        const firstStop = currentLeg.stops[0];
+        const lastStop = currentLeg.stops[currentLeg.stops.length - 1];
+
+        if (firstStop.departure_time && lastStop.arrival_time) {
+          const startDate = new Date(firstStop.departure_time);
+          const endDate = new Date(lastStop.arrival_time);
+          accumulatedTime += (endDate.getTime() - startDate.getTime()) / 1000;
+        }
+      }
+    }
+
+    const resultTime = new Date(startTime);
+    resultTime.setSeconds(startTime.getSeconds() + accumulatedTime);
+    return resultTime;
+  }
+  getArrivalTime(path: any): Date {
+    const now = new Date();
+    const durationInMillis = path.time; // folosim direct timpul în millisecunde
+    return new Date(now.getTime() + durationInMillis); // adăugăm exact timpul în millisecunde
+  }
+  getStopTime(stop: any, leg: any, route: any): Date {
+    const segmentStartTime = this.calculateSegmentTime(leg, route.legs.indexOf(leg), route.legs);
+
+    if (leg.type === 'pt' && leg.stops) {
+      const currentStopTime = new Date(stop.arrival_time || stop.departure_time);
+      const firstStopTime = new Date(leg.stops[0].departure_time);
+      const timeDiff = (currentStopTime.getTime() - firstStopTime.getTime()) / 1000;
+
+      const resultTime = new Date(segmentStartTime);
+      resultTime.setSeconds(segmentStartTime.getSeconds() + timeDiff);
+      return resultTime;
+    }
+
+    return segmentStartTime;
+  }
+  private calculateLegDuration(leg: any): number {
+    if (leg.type === 'walk') {
+      return Number(leg.total_time) || 0;
+    } else if (leg.type === 'pt' && leg.stops && leg.stops.length >= 2) {
+      // Pentru transport public, folosim timpul între prima și ultima stație
+      const durationMinutes = leg.duration ? leg.duration / 60 : 0; // presupunând că duration este în secunde
+      return Math.floor(durationMinutes);
+    }
+    return 0;
+  }
+  private parseTime(timeString: string): Date {
+    const baseTime = new Date();
+    if (timeString) {
+      const timeParts = timeString.split('T')[1].split(':');
+      baseTime.setHours(parseInt(timeParts[0]));
+      baseTime.setMinutes(parseInt(timeParts[1]));
+      baseTime.setSeconds(0);
+    }
+    return baseTime;
+  }
+  private getTimeDifferenceInMinutes(start: Date, end: Date): number {
+    return (end.getTime() - start.getTime()) / 60000;
+  }
+
+  toggleRoute(route: any) {
+    this.clearRoutes(false);
+    if (!route.showRouteDetails)
+      this.addRouteToMap(route);
+    for (let i = 0; i < this.directionRouteDetails.paths.length; i++) {
+      if (this.directionRouteDetails.paths[i].weight !== route.weight)
+        this.directionRouteDetails.paths[i].showRouteDetails = false;
+    }
+    route.showRouteDetails = !route.showRouteDetails;
+  }
+
+  toggleStops(leg: any) {
+    leg.showStops = !leg.showStops;
+  }
+
   private async loadGeoJSONLayers() {
     if (this.isBrowser) {
       try {
@@ -2214,6 +2789,7 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
     }
   }
 
+
   toggleLayer(layerName: string, event: Event) {
     if (this.isBrowser) {
       const input = event.target as HTMLInputElement;
@@ -2292,6 +2868,7 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
     }
   }
 
+
   isPointLayer(config: GeoJSONLayerConfig): boolean {
     const isPoint = this.pointLayers.has(config.overlayName);
     // console.log(`Layer ${config.overlayName} is point: ${isPoint}`);
@@ -2353,7 +2930,7 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
       // Remove the station markers for this route
       if (this.stationMarkers.has(routeId)) {
         this.stationMarkers.get(routeId)?.forEach((marker: any) => {
-          this.map.removeLayer(marker);
+            this.map.removeLayer(marker);
         });
         this.stationMarkers.delete(routeId);
       }
@@ -3330,4 +3907,216 @@ export class LeafletMapComponent implements OnInit, OnDestroy {
     // Fit the map to the bounds of the polyline
     this.map.fitBounds(polyline.getBounds());
   }
+  private addGraphhopperStopMarkers(stops: Stop[], routeId: string) {
+    stops.forEach((stop) => {
+      if (stop.stop_id.startsWith("PV")) {
+        stop.stop_id = stop.stop_id.split("_")[1];
+      }
+      let stationFeature = this.findStationByStopId(stop.stop_id);
+      if (stationFeature) {
+        this.addGraphhopperStationMarker(stationFeature, stop, routeId);
+      } else {
+        this.addGraphhopperSimpleMarker(stop);
+      }
+    });
+  }
+
+  private findStationByStopId(stopId: string): any {
+    for (const routeShortName in this.stationsGeoJsonData) {
+      const stationFeatures = this.stationsGeoJsonData[routeShortName] || [];
+      const found = stationFeatures.find((feature: any) =>
+        feature.properties["Cod Statie"] === stopId
+      );
+      if (found) return found;
+    }
+    return null;
+  }
+
+  private addGraphhopperStationMarker(feature: any, stop: Stop, routeId: string) {
+    const { properties } = feature;
+    const isMobile = window.innerWidth <= 768;
+    const codStatie = properties["Cod Statie"];
+    const routeShortName = this.getShortNameFromRouteId(routeId);
+    console.log("Mapare: ", this.getShortNameFromRouteId(routeId));
+    let iconUrl = "assets/statie_autobuz.png";
+    if (properties["Mod Transp"] === "TRAM") {
+      iconUrl = "assets/statie_tramvai.png";
+    } else if (properties["Mod Transp"] === "Metrou") {
+      iconUrl = "assets/statie_metrou.png";
+    }
+
+    const stationIcon = L.icon({
+      iconUrl,
+      iconSize: isMobile ? [25, 25] : [30, 30],
+      iconAnchor: isMobile ? [15, 25] : [15, 30],
+      popupAnchor: isMobile ? [0, -20] : [0, -30],
+    });
+
+    const determineBoxColor = (routeShortName: string) => {
+      if (routeShortName.startsWith("M")) {
+        return "black";
+      } else if (routeShortName.startsWith("N")) {
+        return "darkblue";
+      } else {
+        const routeNumber = parseInt(routeShortName);
+        if (routeNumber >= 1 && routeNumber <= 55) {
+          return "#BE1622";
+        } else if (routeNumber >= 56 && routeNumber <= 99) {
+          return "#008D36";
+        } else if (routeNumber >= 100 && routeNumber <= 400) {
+          return "#1D71B8";
+        } else if (routeNumber >= 400 && routeNumber <= 999) {
+          return "#662483";
+        }
+      }
+      return "yellow";
+    };
+
+    const marker = L.marker([stop.geometry.coordinates[1], stop.geometry.coordinates[0]], {
+      icon: stationIcon,
+      // @ts-ignore
+      transportation_mode: properties["Mod Transp"],
+      // @ts-ignore
+      station_code: properties["Cod Statie"]
+    });
+
+    const updateArrivalData = () => {
+      this.http.get(`/api/nextArrivals/${codStatie}`).subscribe(
+        (response: any) => {
+          if (response && Array.isArray(response.lines)) {
+            let filteredArrivals = response.lines
+              .filter((line: any) => line.arrivingTime !== undefined)
+              .sort((a: any, b: any) => a.arrivingTime - b.arrivingTime);
+
+            // Construim conținutul popup-ului
+            const basePopupContent = `
+            <div>
+              <strong>Cod Statie:</strong> ${properties["Cod Statie"]}<br>
+              <strong>Statie:</strong> ${properties["Statie"]}<br>
+              <strong>Linie/Sens:</strong> <span style="background-color: ${determineBoxColor(routeShortName)}; color: white; padding: 2px 4px; border-radius: 3px;">${routeId}</span><br>
+              ${properties["Linii Comune"] ? `<strong>Linii Comune:</strong> ${formatLiniiComune(properties["Linii Comune"])}<br>` : ''}
+              ${properties["Mod Transp"] !== "Metrou" ? `<strong>Artera:</strong> ${properties["Artera"]}<br>` : ''}
+              <strong>Mod Transp:</strong> ${properties["Mod Transp"]}<br>
+              <strong>Sosiri programate:</strong><br>
+            </div>
+          `;
+
+            const arrivalsDiv = document.createElement('div');
+            arrivalsDiv.className = 'arrivals-container';
+
+            if (filteredArrivals.length === 0) {
+              arrivalsDiv.innerHTML = "<div style='color: #666;'>Nu sunt sosiri programate</div>";
+            } else {
+              filteredArrivals.forEach(line => {
+                const arrivingTimeInMinutes = Math.floor(line.arrivingTime / 60);
+                let arrivingTimeText: string;
+
+                if (arrivingTimeInMinutes === 0) {
+                  arrivingTimeText = '<span style="color: white; font-weight: bold;">În Stație</span>';
+                } else if (arrivingTimeInMinutes < 1) {
+                  arrivingTimeText = '<span style="color: white; font-weight: bold;"> <1 min</span>';
+                } else if (arrivingTimeInMinutes >= 60) {
+                  const hours = Math.floor(arrivingTimeInMinutes / 60);
+                  const minutes = arrivingTimeInMinutes % 60;
+                  arrivingTimeText = `<span style="color: white; font-weight: bold;">${hours} oră${hours > 1 ? " și" : ""} ${minutes} min</span>`;
+                } else {
+                  arrivingTimeText = `<span style="color: white; font-weight: bold;">${arrivingTimeInMinutes} min</span>`;
+                }
+
+                const arrivalElement = document.createElement('div');
+                arrivalElement.innerHTML = `
+                <div style="cursor: pointer; background-color: ${line.color}; color: white; padding: 2px 4px; border-radius: 3px; margin-bottom: 2px;">
+                  ${line.name} - ${line.directionName}
+                  <span style="background-color: green; padding: 2px 4px; border-radius: 3px; margin-left: 5px;">
+                    ${arrivingTimeText}
+                  </span>
+                </div>
+              `;
+
+                arrivalElement.onclick = () => {
+                  if (this.selectedRoutesGroupLayers?.length === 0 && this.nightBusRoutesLoaded === false) {
+                    this.selectRoute(parseInt(line.id));
+                  }
+                };
+
+                arrivalsDiv.appendChild(arrivalElement);
+              });
+            }
+
+            const popupContainer = document.createElement('div');
+            popupContainer.innerHTML = basePopupContent;
+            popupContainer.appendChild(arrivalsDiv);
+
+            marker.setPopupContent(popupContainer);
+          }
+        },
+        error => {
+          console.error("Error fetching arrivals for station:", error);
+          marker.setPopupContent(`
+          <div>
+            <strong>Eroare la încărcarea sosirilor</strong><br>
+            Vă rugăm încercați mai târziu.
+          </div>
+        `);
+        }
+      );
+    };
+
+    // Inițializăm popup-ul cu un mesaj de loading
+
+    let defaultPopupText = properties["Mod Transp"] === "Metrou" ? "<div><strong>Date indisponibile!</strong></div>" : `<div><strong>Se încarcă informațiile...</strong></div>`;
+
+
+    marker.bindPopup(defaultPopupText);
+
+    // Actualizăm datele la deschiderea popup-ului
+    marker.on('popupopen', () => {
+      updateArrivalData();
+      const intervalId = setInterval(updateArrivalData, 30000);
+      marker.on('popupclose', () => {
+        clearInterval(intervalId);
+      });
+    });
+
+    marker.addTo(this.map);
+    this.graphhopperStopMarkers.push(marker);
+
+    function formatLiniiComune(liniiComune: string) {
+      return liniiComune
+        .split(", ")
+        .map(line => {
+          const boxColor = determineBoxColor(line);
+          return `<span style="background-color: ${boxColor}; color: white; padding: 2px 4px; border-radius: 3px;">${line}</span>`;
+        })
+        .join(", ");
+    }
+  }
+
+  private addGraphhopperSimpleMarker(stop: Stop) {
+    const busIcon = L.icon({
+      iconUrl: './assets/statie_autobuz.png',
+      iconSize: [30, 30],
+      iconAnchor: [12, 12],
+      popupAnchor: [0, -12]
+    });
+
+    const marker = L.marker(
+      [stop.geometry.coordinates[1], stop.geometry.coordinates[0]],
+      { icon: busIcon }
+    )
+      .bindPopup(`
+        <strong>${stop.stop_name}</strong><br>
+        ${stop.departure_time ? 'Plecare: ' + new Date(stop.departure_time).toLocaleTimeString('ro-RO') : ''}
+        ${stop.arrival_time ? '<br>Sosire: ' + new Date(stop.arrival_time).toLocaleTimeString('ro-RO') : ''}
+      `);
+
+    marker.addTo(this.map);
+    this.graphhopperStopMarkers.push(marker);
+  }
+  toggleSidebar() {
+    this.showRouteSidebar = !this.showRouteSidebar;
+    this.showRouteArrow=true;
+  }
+
 }
+

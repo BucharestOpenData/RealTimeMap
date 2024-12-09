@@ -6,11 +6,14 @@ import{LeafletMapPageComponent} from "./leaflet-map-page-component/leaflet-map-p
 import {LeafletMapComponentPMUD} from "./leaflet-map-pmud/leaflet-map.component";
 import {AuthGuard} from "./auth.guard";
 import {DocsComponent} from "./docs/docs.component";
+import { RouteDirectionsComponent } from './route-directions/route-directions.component';
 
 export const routes: Routes = [
+  { path: ':placeStartCoordLat/:placeStartCoordLng/:placeEndCoordLat/:placeEndCoordLng/:placeStart/:placeEnd', component:LeafletMapPageComponent },
   { path: '', component:LeafletMapPageComponent },
   { path: 'login', component: LeafletMapPageComponent },
-  { path:'docs',component: DocsComponent }
+  { path:'docs',component: DocsComponent },
+  { path: 'route', component : RouteDirectionsComponent}
   // Add more routes as needed
 ];
 

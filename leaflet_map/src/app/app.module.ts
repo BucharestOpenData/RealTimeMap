@@ -8,6 +8,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppComponent } from './app.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { LeafletMapComponent } from './leaflet-map/leaflet-map.component';
+import { RouteDirectionsComponent } from './route-directions/route-directions.component';
 import { AuthService } from './auth.service';
 import { BusDataService } from './services/bus-data.service';
 import {ExcelReaderService} from "./services/excel-reader.service";
@@ -27,7 +28,8 @@ import {AppRoutingModule} from "./app.routes";
     LeafletMapComponent,
     ToolbarComponent,
     AppComponent,
-    AppRoutingModule
+    AppRoutingModule,
+    RouteDirectionsComponent
   ],
   exports:[
     ToolbarComponent,

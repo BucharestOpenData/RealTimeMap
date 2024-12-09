@@ -1,82 +1,209 @@
-<!-- Check if it's not a mobile device before rendering the elements -->
-<nav *ngIf="!isMobile" class="upload-geojson-container" [ngClass]="{'menu-show': showUploadMenu}">
-  <button class="upload-geojson-button" (click)="toggleUploadMenu()">Tools</button>
-  <div *ngIf="showUploadMenu" class="upload-menu">
-    <button class="upload-geojson-button" (click)="fileInput.click()">Încarcă GeoJSON</button>
-    <input type="file" #fileInput (change)="onFileUpload($event)" style="display: none;" />
-    <ul class="uploaded-geojson-list">
-      <li *ngFor="let file of uploadedGeoJsonFiles; let i = index" class="uploaded-geojson-item">
-        <span (click)="addUploadedGeoJsonToMap(file)">{{ file.name }}</span>
-        <button class="delete-geojson-button" (click)="removeUploadedGeoJsonFromMap(i)">Delete</button>
+<div id="map" [ngClass]="{'map-reduced': showRouteSidebar}">
+  <!-- Upload GeoJSON Menu -->
+  <nav *ngIf="!isMobile" class="upload-geojson-container" [ngClass]="{ 'menu-show': showUploadMenu }">
+    <button class="upload-geojson-button" (click)="toggleUploadMenu()">
+      Tools
+    </button>
+    <div *ngIf="showUploadMenu" class="upload-menu">
+      <button class="upload-geojson-button" (click)="fileInput.click()">
+        Încarcă GeoJSON
+      </button>
+      <input type="file" #fileInput (change)="onFileUpload($event)" style="display: none" />
+      <ul class="uploaded-geojson-list">
+        <li *ngFor="let file of uploadedGeoJsonFiles; let i = index" class="uploaded-geojson-item">
+          <span (click)="addUploadedGeoJsonToMap(file)">{{ file.name }}</span>
+          <button class="delete-geojson-button" (click)="removeUploadedGeoJsonFromMap(i)">
+            Delete
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Toggle Layers Button and Menu -->
+  <nav *ngIf="!isMobile && !nightBusRoutesLoaded && !showRouteSidebar" class="menu-container layers-menu-container"
+    [ngClass]="{ 'menu-show': showMenu }">
+    <button class="menu-button" (click)="toggleMenu()">Layere</button>
+    <ul id="menu" class="menu" [class.show]="showMenu">
+      <li *ngFor="let config of layerConfigs">
+        <input type="checkbox" id="{{ config.overlayName }}" (change)="toggleLayer(config.overlayName, $event)" />
+        <label for="{{ config.overlayName }}">
+          {{ config.overlayName }}
+          <div *ngIf="!isPointLayer(config)" class="layer-controls">
+            <div>
+              <label for="color-{{ config.overlayName }}">Culoare:</label>
+              <input type="color" id="color-{{ config.overlayName }}" class="color-input" [value]="'#3388ff'"
+                (input)="changeLayerColor(config.overlayName, $event)" />
+            </div>
+            <div>
+              <label for="weight-{{ config.overlayName }}">Grosime:</label>
+              <input type="range" id="weight-{{ config.overlayName }}" min="1" max="10" step="1" [value]="5"
+                class="weight-range" (input)="changeLayerWeight(config.overlayName, $event)" />
+            </div>
+          </div>
+        </label>
       </li>
     </ul>
-  </div>
-</nav>
+  </nav>
 
-<!-- Toggle Layers Button and Menu -->
-<nav *ngIf="!isMobile" class="menu-container layers-menu-container" [ngClass]="{'menu-show': showMenu}">
-  <button class="menu-button" (click)="toggleMenu()">Layere</button>
-  <ul id="menu" class="menu" [class.show]="showMenu">
-    <li *ngFor="let config of layerConfigs">
-      <input type="checkbox" id="{{config.overlayName}}" (change)="toggleLayer(config.overlayName, $event)">
-      <label for="{{config.overlayName}}">
-        {{config.overlayName}}
-        <div *ngIf="!isPointLayer(config)" class="layer-controls">
-          <div>
-            <label for="color-{{config.overlayName}}">Culoare:</label>
-            <input type="color" id="color-{{config.overlayName}}" class="color-input" [value]="'#3388ff'" (input)="changeLayerColor(config.overlayName, $event)" />
-          </div>
-          <div>
-            <label for="weight-{{config.overlayName}}">Grosime:</label>
-            <input type="range" id="weight-{{config.overlayName}}" min="1" max="10" step="1" [value]="5" class="weight-range" (input)="changeLayerWeight(config.overlayName, $event)" />
-          </div>
+  <!-- Location Finder -->
+  <div class="location-finder" *ngIf="isDebug" [@slideAnimation]="showRouteSidebar ? 'out' : 'in'"
+    [ngClass]="{'with-route': placeStartCoord && placeEndCoord}">
+    <input type="text" placeholder="De la" [(ngModel)]="placeStart" (keyup)="getPlace(placeStart)"
+      (click)="clickedOnFrom=true" />
+    <input type="text" placeholder="La" [(ngModel)]="placeEnd" (keyup)="getPlace(placeEnd,'END')" />
+    <ul id="places-start-menu" class="menu" [class.show]="(placesFound.length > 0 || clickedOnFrom) && !isOnEnd">
+      <li style="cursor: pointer" (click)="getCurrentLocationPlace()" [class.show]="clickedOnFrom"
+        *ngIf="currentLocation.latlng.lat !== null">
+        Locația curentă
+      </li>
+      <li style="cursor: pointer" *ngFor="let place of placesFound"
+        (click)="getPlaceCoord(place.lat, place.lon, place.display_name, 'START')">
+        {{ place.display_name }}
+      </li>
+    </ul>
+    <ul id="places-end-menu" class="menu" [class.show]="placesFound.length > 0 && isOnEnd">
+      <li style="cursor: pointer" *ngFor="let place of placesFound"
+        (click)="getPlaceCoord(place.lat, place.lon, place.display_name, 'END')">
+        {{ place.display_name }}
+      </li>
+    </ul>
+    <div>
+      <button class="location-button" (click)="getDirections()">Search</button>
+    </div>
+
+  </div>
+
+  <!-- GTFS Menu -->
+  <nav *ngIf="!nightBusRoutesLoaded && !showRouteSidebar" class="menu-container gtfs-menu-container"
+    [ngClass]="{ 'menu-show': showGtfsMenu }">
+    <button class="menu-button" (click)="toggleGtfsMenu()">
+      Linii Transport RealTime
+    </button>
+
+    <div *ngIf="selectedRouteShortNames.length > 0"
+      style="color: #454545; font-size: 16px; font-weight: 500; line-height: 1.4;">
+      Linii selectate: {{ selectedRouteShortNames.join(", ") }}
+      <button class="menu-button" (click)="clearAllSelectionAndRestartFollowing(false)">
+        Șterge Selecțiile
+      </button>
+    </div>
+    <ul id="gtfs-menu" class="menu" [class.show]="showGtfsMenu">
+      <div class="search-container">
+        <input type="text" placeholder="Search Route" (input)="filterRoutes()" [(ngModel)]="searchTerm" />
+      </div>
+      <div class="button-container">
+        <button class="menu-button" (click)="filterByType(3)">Autobuz</button>
+        <button class="menu-button" (click)="filterByType(0)">Tramvai</button>
+        <button class="menu-button" (click)="filterByType(11)">Troleibuz</button>
+      </div>
+
+      <li style="cursor: pointer" *ngFor="let route of filteredRouteDetails"
+        [class.selected]="selectedRoutes.includes(route.routeId)" (click)="selectRoute(route.routeId)">
+        Linia: {{ route.shortName }}
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Login Overlay -->
+  <div id="loginOverlay" class="login-overlay">
+    <div class="login-form">
+      <h2>Login</h2>
+      <form (ngSubmit)="onLoginSubmit()" #loginForm="ngForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" [(ngModel)]="loginData.username" required />
         </div>
-      </label>
-    </li>
-  </ul>
-</nav>
-
-<nav class="menu-container gtfs-menu-container" [ngClass]="{'menu-show': showGtfsMenu}">
-  <button class="menu-button" (click)="toggleGtfsMenu()">Linii Transport RealTime</button>
-
-  <div *ngIf="selectedRouteShortNames.length > 0" style="color: #454545;">
-    Linii selectate: {{selectedRouteShortNames.join(', ')}}
-    <button class="menu-button" (click)="clearAllSelectionAndRestartFollowing(false)">Șterge Selecțiile</button>
-  </div>
-  <ul id="gtfs-menu" class="menu" [class.show]="showGtfsMenu">
-    <div class="search-container">
-      <input type="text" placeholder="Search Route" (input)="filterRoutes()" [(ngModel)]="searchTerm" />
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" [(ngModel)]="loginData.password" required />
+        </div>
+        <button type="submit" class="login-button">Login</button>
+        <button type="button" id="closeOverlay" class="login-button"
+          style="margin-top: 10px; background-color: #e74c3c">
+          Cancel
+        </button>
+      </form>
     </div>
-    <div class="button-container">
-      <button class="menu-button" (click)="filterByType(3)">Autobuz</button>
-      <button class="menu-button" (click)="filterByType(0)">Tramvai</button>
-      <button class="menu-button" (click)="filterByType(11)">Troleibuz</button>
-    </div>
-
-    <li *ngFor="let route of filteredRouteDetails"
-        [class.selected]="selectedRoutes.includes(route.routeId)"
-        (click)="selectRoute(route.routeId)">
-      Linia: {{route.shortName}}
-    </li>
-  </ul>
-</nav>
-<div id="loginOverlay" class="login-overlay">
-  <div class="login-form">
-    <h2>Login</h2>
-    <form (ngSubmit)="onLoginSubmit()" #loginForm="ngForm">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" [(ngModel)]="loginData.username" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" [(ngModel)]="loginData.password" required>
-      </div>
-      <button type="submit" class="login-button">Login</button>
-      <button type="button" id="closeOverlay" class="login-button" style="margin-top: 10px; background-color: #e74c3c;">Cancel</button>
-    </form>
   </div>
+
 </div>
 
 
-<div id="map"></div>
+
+<div *ngIf="(this.directionRouteDetails && this.directionRouteDetails.paths && this.directionRouteDetails.paths.length > 0)" class="sidebar-toggle-handle" (click)="toggleSidebar()">
+  <img *ngIf="!this.showRouteSidebar" class="sidebar-toggle-arrow" src=".\assets\arrow-up.png">
+  <img *ngIf="this.showRouteSidebar" class="sidebar-toggle-arrow" src=".\assets\arrow-down.png">
+</div>
+
+
+<div class="graphhopper-sidebar-wrapper">
+  <!-- Separate toggle handle that's always visible when showRouteSidebar is true -->
+  <div class="graphhopper-sidebar" *ngIf="showRouteSidebar && directionRouteDetails"
+    [class.collapsed]="!showRouteSidebar">
+    <div class="sidebar-close-element">
+      <button class="sidebar-close-button" (click)="clearRoutes(true,true)">
+        <img class="sidebar-close-image" src=".\assets\delete.png">
+      </button>
+    </div>
+    <div *ngFor="let route of directionRouteDetails.paths" class="trip-details">
+      <div class="trip-summary" (click)="toggleRoute(route)">
+        <div class="time-range">
+          {{ getCurrentTime() | date:'HH:mm' }} -
+          {{ getArrivalTime(route) | date:'HH:mm' }}
+        </div>
+        <div class="trip-duration">
+          {{convertMillisecondsToTime(route)}}
+        </div>
+        <div class="trip-info">
+          Transfers: {{route.transfers}}
+        </div>
+      </div>
+
+      <div *ngIf="route.showRouteDetails" class="trip-segments">
+        <ng-container *ngFor="let leg of route.legs; let i = index">
+          <!-- Walking segment -->
+          <div class="segment walk" *ngIf="leg.type === 'walk'">
+            <div class="segment-time">{{calculateSegmentTime(leg, i, route.legs) | date:'HH:mm'}}</div>
+            <div class="segment-icon">🚶</div>
+            <div class="segment-info">
+              <div class="segment-name">Mers</div>
+              <div class="segment-details">{{leg.distance | number:'1.0-0'}}m · {{leg.total_time | number:'1.0-0'}} min
+              </div>
+            </div>
+          </div>
+
+          <!-- Transit segment -->
+          <div [ngStyle]="{'border-left-color': leg.routeColor  !== undefined ? leg.routeColor : 'black'}"
+            class="segment transit" *ngIf="leg.type === 'pt'">
+            <div class="segment-time">{{calculateSegmentTime(leg, i, route.legs) | date:'HH:mm'}}</div>
+            <div class="segment-icon">🚌</div>
+            <div class="segment-info">
+              <div class="segment-name">{{leg.departure_location}}</div>
+              <div class="line-info">
+                <span class="line-number">{{leg.shortName}}</span>
+                {{leg.trip_headsign}}
+              </div>
+              <div class="segment-controls">
+                <div class="arrow-toggle" (click)="toggleStops(leg)">
+                  <span class="arrow-icon" [class.open]="leg.showStops"></span>
+                  <span>{{ leg.stops?.length || 0 }} stații</span>
+                </div>
+              </div>
+
+              <!-- Stops list -->
+              <div class="stops-list" *ngIf="leg.showStops && leg.stops">
+                <div class="stop-item" *ngFor="let stop of leg.stops; let first = first; let last = last">
+                  <div class="stop-marker" [class.start]="first" [class.end]="last"></div>
+                  <div class="stop-time">{{getStopTime(stop, leg, route) | date:'HH:mm'}}</div>
+                  <div class="stop-name">{{stop.stop_name}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+  </div>
+</div>

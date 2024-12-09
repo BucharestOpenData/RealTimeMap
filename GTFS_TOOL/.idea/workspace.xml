@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="62a849cd-df42-480d-8ff3-1d1170b41607" name="Changes" comment="feat: Implement GTFS data processing and GeoJSON generation with enhanced stop_id mapping&#10;&#10;- Added functionality to fetch and extract GTFS data from the Bucharest region.&#10;- Implemented merging of `stop_times.txt`, `trips.txt`, `routes.txt`, and `stops.txt` to generate a comprehensive dataset.&#10;- Enhanced the GeoJSON generation process with custom logic to map `stop_id` from `stops.txt` and replace `Cod Statie` for matching stops.&#10;- Implemented logic to match stops based on the first 5 characters of `stop_name`, addressing variations in naming conventions.&#10;- Ensured correct handling of stops with identical `stop_name` but different `stop_code`, preserving unique coordinates.&#10;- Scheduled a daily task to refresh the data and regenerate the GeoJSON.&#10;- Fixed issues related to duplications and incorrect stop mappings, ensuring accurate representation in the output.&#10;&#10;This commit significantly improves the reliability and accuracy of the stop data mapping and GeoJSON generation process.">
-      <change beforePath="$PROJECT_DIR$/../leaflet_map/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../leaflet_map/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../leaflet_map/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../leaflet_map/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../leaflet_map/src/app/leaflet-map/leaflet-map.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../leaflet_map/src/app/leaflet-map/leaflet-map.component.ts" afterDir="false" />
-    </list>
+    <list default="true" id="62a849cd-df42-480d-8ff3-1d1170b41607" name="Changes" comment="feat: Implement GTFS data processing and GeoJSON generation with enhanced stop_id mapping&#10;&#10;- Added functionality to fetch and extract GTFS data from the Bucharest region.&#10;- Implemented merging of `stop_times.txt`, `trips.txt`, `routes.txt`, and `stops.txt` to generate a comprehensive dataset.&#10;- Enhanced the GeoJSON generation process with custom logic to map `stop_id` from `stops.txt` and replace `Cod Statie` for matching stops.&#10;- Implemented logic to match stops based on the first 5 characters of `stop_name`, addressing variations in naming conventions.&#10;- Ensured correct handling of stops with identical `stop_name` but different `stop_code`, preserving unique coordinates.&#10;- Scheduled a daily task to refresh the data and regenerate the GeoJSON.&#10;- Fixed issues related to duplications and incorrect stop mappings, ensuring accurate representation in the output.&#10;&#10;This commit significantly improves the reliability and accuracy of the stop data mapping and GeoJSON generation process." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -47,6 +43,8 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Flask server.GTFS TOOL.executor": "Run",
+    "Python.GTFS TOOL.executor": "Run",
     "Python.get_capat.executor": "Run",
     "Python.gtfs_routes.executor": "Run",
     "Python.gtfs_tool.executor": "Run",
@@ -63,7 +61,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.GTFS TOOL">
     <configuration name="GTFS TOOL" type="PythonConfigurationType" factoryName="Python">
       <module name="GTFS TOOL" />
       <option name="ENV_FILES" value="" />
@@ -85,6 +83,22 @@
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
       <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="GTFS TOOL" type="Python.FlaskServer">
+      <module name="GTFS TOOL" />
+      <option name="target" value="$PROJECT_DIR$/gtfs_tool.py" />
+      <option name="targetType" value="PATH" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="launchJavascriptDebuger" value="false" />
       <method v="2" />
     </configuration>
   </component>
@@ -125,6 +139,9 @@
       <workItem from="1726555029816" duration="715000" />
       <workItem from="1726571140666" duration="6187000" />
       <workItem from="1728629037699" duration="26000" />
+      <workItem from="1732520248141" duration="768000" />
+      <workItem from="1733467129098" duration="25000" />
+      <workItem from="1733467165636" duration="1056000" />
     </task>
     <task id="LOCAL-00001" summary="Add script to fetch, extract, and process GTFS data into GeoJSON format&#10;&#10;- Fetch GTFS zip file and extract stops.txt and stop_times.txt&#10;- Merge stops and stop_times data on stop_id&#10;- Clean data by removing rows with NaN values for stop_lat and stop_lon&#10;- Extract numeric part of trip_id and determine Mod Transp (TRAM or BUS)&#10;- Generate GeoJSON features with properties: Linia/sens, Statie, Artera, Mod Transp&#10;- Write GeoJSON file with each feature on a new line&#10;- Add progress bar for data processing&#10;- Schedule daily data fetching and processing at 2 AM&#10;- Handle exceptions and log errors&#10;- Set up Flask app for serving the processed data">
       <option name="closed" value="true" />
@@ -253,6 +270,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/GTFS_TOOL$gtfs_routes.coverage" NAME="gtfs_routes Coverage Results" MODIFIED="1723445694593" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Statii_Transport_Public_Suprafata_geojson$gtfs_tool.coverage" NAME="gtfs_tool Coverage Results" MODIFIED="1726806969534" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/GTFS_TOOL$GTFS_TOOL.coverage" NAME="GTFS TOOL Coverage Results" MODIFIED="1733467265294" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/Statii_Transport_Public_Suprafata_geojson$txt_to_xlsx.coverage" NAME="txt_to_xlsx Coverage Results" MODIFIED="1724996407009" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/gtfs_data_routes_geojson$gtfs_tool.coverage" NAME="gtfs_tool Coverage Results" MODIFIED="1723628133223" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/GTFS_TOOL$gtfs_tool.coverage" NAME="gtfs_tool Coverage Results" MODIFIED="1723448235136" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
